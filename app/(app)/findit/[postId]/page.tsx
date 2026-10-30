@@ -1,9 +1,12 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { Skeleton } from "@/components/ui/skeleton";
 import ItemDetailClient from "./item-detail-client";
 
 // The item ID is only available at request time for this dynamic detail route.
 export const instant = false;
+
+export const metadata: Metadata = { title: "Found item | CampusOS FindIt" };
 
 export default function ItemDetailRoute({ params }: { params: Promise<{ postId: string }> }) {
   return (

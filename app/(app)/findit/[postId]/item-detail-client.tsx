@@ -71,6 +71,14 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
     toast.add({ title: "Couldn’t withdraw claim", description: withdrawClaim.error.message, priority: "high" });
   }, [withdrawClaim.error]);
 
+  useEffect(() => {
+    if (createClaim.isSuccess) toast.add({ title: "Claim submitted", description: "Staff can now review your claim." });
+  }, [createClaim.isSuccess]);
+
+  useEffect(() => {
+    if (withdrawClaim.isSuccess) toast.add({ title: "Claim withdrawn" });
+  }, [withdrawClaim.isSuccess]);
+
   if (postQuery.isPending) {
     return <main className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12" aria-label="Loading item details">
       <Skeleton className="h-6 w-32" />
@@ -142,7 +150,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
         </div>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.72fr)]">
-          <ClaimsList claims={claims} profile={profile} withdrawingClaimId={withdrawClaim.isPending ? withdrawClaim.variables ?? null : null} onWithdraw={(claimId) => withdrawClaim.mutateAsync(claimId)} resolved={post.resolved} resolutionClaimId={resolutionQuery.data?.claim_id} onResolve={isStaff ? (claimId, note) => runStaffAction(() => resolvePost.mutateAsync({ claimId, note }), "Item resolved", "Couldn’t resolve item").then(() => undefined) : undefined} onUpdateResolution={isStaff ? (claimId, note) => runStaffAction(() => updateResolution.mutateAsync({ claimId, note }), "Resolution updated", "Couldn’t update resolution").then(() => undefined) : undefined} />
+          {claimsQuery.isPending ? <section aria-label="Loading claims" className="rounded-2xl border border-border bg-card p-5 sm:p-7"><Skeleton className="h-7 w-32" /><div className="mt-5 space-y-4">{Array.from({ length: 2 }, (_, index) => <div key={index} className="rounded-xl border border-border p-4"><Skeleton className="h-5 w-1/2" /><Skeleton className="mt-4 h-16 w-full" /></div>)}</div></section> : <ClaimsList claims={claims} profile={profile} withdrawingClaimId={withdrawClaim.isPending ? withdrawClaim.variables ?? null : null} onWithdraw={(claimId) => withdrawClaim.mutateAsync(claimId)} resolved={post.resolved} resolutionClaimId={resolutionQuery.data?.claim_id} onResolve={isStaff ? (claimId, note) => runStaffAction(() => resolvePost.mutateAsync({ claimId, note }), "Item resolved", "Couldn’t resolve item").then(() => undefined) : undefined} onUpdateResolution={isStaff ? (claimId, note) => runStaffAction(() => updateResolution.mutateAsync({ claimId, note }), "Resolution updated", "Couldn’t update resolution").then(() => undefined) : undefined} />}
           <aside className="h-fit rounded-2xl border border-border bg-muted/50 p-5 sm:p-6">
             <h2 className="font-semibold">Item details</h2>
             <dl className="mt-4 space-y-3 text-sm"><div className="flex justify-between gap-4"><dt className="text-muted-foreground">Item ID</dt><dd className="text-right font-medium">{post.post_id}</dd></div><div className="flex justify-between gap-4"><dt className="text-muted-foreground">Photos</dt><dd className="text-right font-medium">{post.images.length}</dd></div><div className="flex justify-between gap-4"><dt className="text-muted-foreground">Status</dt><dd className="text-right font-medium capitalize">{post.resolved ? "resolved" : post.status}</dd></div><div className="flex justify-between gap-4"><dt className="text-muted-foreground">Created</dt><dd className="text-right font-medium"><time dateTime={post.created_at}>{formatDate(post.created_at)}</time></dd></div><div className="flex justify-between gap-4"><dt className="text-muted-foreground">Updated</dt><dd className="text-right font-medium"><time dateTime={post.updated_at}>{formatDate(post.updated_at)}</time></dd></div></dl>

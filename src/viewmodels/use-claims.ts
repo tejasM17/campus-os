@@ -1,13 +1,23 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createClaimRequest, listClaimsRequest, withdrawClaimRequest } from "@/src/lib/api/endpoints";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createClaimRequest, listClaimsRequest, myClaimsRequest, withdrawClaimRequest } from "@/src/lib/api/endpoints";
 
 export function useClaims(postId: string, enabled = true) {
   return useQuery({
     queryKey: ["claims", postId],
     queryFn: () => listClaimsRequest(postId),
     enabled: Boolean(postId) && enabled,
+  });
+}
+
+export function useMyClaims(enabled = true) {
+  return useInfiniteQuery({
+    queryKey: ["myClaims"],
+    queryFn: ({ pageParam }) => myClaimsRequest(pageParam ?? undefined),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.next_cursor ?? undefined,
+    enabled,
   });
 }
 
@@ -30,6 +40,11 @@ export function useWithdrawClaim(postId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (claimId: string) => withdrawClaimRequest(claimId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["claims", postId] }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["claims", postId] }),
+        queryClient.invalidateQueries({ queryKey: ["myClaims"] }),
+      ]);
+    },
   });
 }

@@ -57,6 +57,7 @@ export default function FindItFeedPage() {
           <Link href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
             CampusOS <span className="text-primary">/ FindIt</span>
           </Link>
+          <nav aria-label="FindIt" className="hidden items-center gap-1 text-sm md:flex"><Link href="/findit/lost-requests" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">Lost reports</Link><Link href="/claims" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">My claims</Link></nav>
           <div className="flex items-center gap-2 sm:gap-4">
             <ThemeToggle />
             {profile && <span className="hidden text-sm text-muted-foreground sm:inline">{profile.name}</span>}

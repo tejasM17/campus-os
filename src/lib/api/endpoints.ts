@@ -1,5 +1,5 @@
 import { apiCall } from "./client";
-import type { Claim, Paged, Profile, FoundPost } from "./types";
+import type { Claim, Paged, Profile, FoundPost, LostRequest } from "./types";
 
 export type FoundPostStatus = "active" | "archived";
 
@@ -23,6 +23,13 @@ export function listClaimsRequest(postId: string) {
     "GET",
     `/api/v1/findit/posts/${encodeURIComponent(postId)}/claims`,
   );
+}
+
+export function myClaimsRequest(cursor?: string) {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  const query = params.toString();
+  return apiCall<Paged<Claim>>("GET", `/api/v1/findit/claims/me${query ? `?${query}` : ""}`);
 }
 
 export function createClaimRequest(postId: string, message: string) {
@@ -97,6 +104,57 @@ export function updateResolutionRequest(postId: string, claim_id: string, note?:
 
 export function undoResolutionRequest(postId: string) {
   return apiCall<void>("DELETE", `/api/v1/findit/posts/${encodeURIComponent(postId)}/resolution`);
+}
+
+export type LostRequestStatus = "active" | "archived";
+
+export interface LostRequestFilters {
+  status: LostRequestStatus;
+  mine?: boolean;
+}
+
+export interface LostRequestInput {
+  title: string;
+  description?: string;
+  location_lost?: string;
+  lost_on?: string;
+}
+
+export function listLostRequestsRequest(
+  filters: LostRequestFilters,
+  cursor?: string,
+) {
+  const params = new URLSearchParams({ status: filters.status });
+  if (filters.mine) params.set("mine", "true");
+  if (cursor) params.set("cursor", cursor);
+  return apiCall<Paged<LostRequest>>(
+    "GET",
+    `/api/v1/findit/lost-requests?${params.toString()}`,
+  );
+}
+
+export function createLostRequestRequest(input: LostRequestInput) {
+  return apiCall<LostRequest>("POST", "/api/v1/findit/lost-requests", {
+    body: input,
+  });
+}
+
+export function updateLostRequestRequest(
+  requestId: string,
+  input: Partial<LostRequestInput> & { status?: LostRequestStatus },
+) {
+  return apiCall<LostRequest>(
+    "PATCH",
+    `/api/v1/findit/lost-requests/${encodeURIComponent(requestId)}`,
+    { body: input },
+  );
+}
+
+export function deleteLostRequestRequest(requestId: string) {
+  return apiCall<void>(
+    "DELETE",
+    `/api/v1/findit/lost-requests/${encodeURIComponent(requestId)}`,
+  );
 }
 
 export interface LoginResponse {

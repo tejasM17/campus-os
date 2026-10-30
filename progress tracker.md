@@ -6,7 +6,10 @@ Keep this file short. Read the phase specs + code for detail.
 
 - **Phase 03 — Item detail + claims** — Implemented; manual acceptance pending
 - **Phase 04 — Staff posting + resolution** — Implemented; manual acceptance pending
-- Next: Phase 05 (Lost requests)
+- **Phase 05 — Lost requests** — Implemented; manual acceptance pending
+- **Phase 06 — My claims + polish** — Implemented; manual acceptance pending
+- **Phase 07 — Production verification** — Build and unauthenticated production route smoke checks complete; live backend manual acceptance pending
+- Next: Complete live release checklist
 
 ## Stack (quick)
 
@@ -28,9 +31,9 @@ Keep this file short. Read the phase specs + code for detail.
 | 02 | Found items gallery | Implemented; manual acceptance pending — `app/(app)/findit/page.tsx`, `src/viewmodels/use-found-posts.ts`, `src/components/findit/*` |
 | 03 | Item detail + claims | Implemented; manual acceptance pending — `app/(app)/findit/[postId]/page.tsx`, `src/viewmodels/use-post.ts`, `src/viewmodels/use-claims.ts`, `src/components/findit/*` |
 | 04 | Staff posting + resolution | Implemented; manual acceptance pending — `src/components/findit/post-form-dialog.tsx`, `src/viewmodels/use-staff-workflows.ts`, `src/lib/api/endpoints.ts`, gallery and item detail screens |
-| 05 | Lost requests | Not started |
-| 06 | My claims + polish | Not started |
-| 07 | Production verification | Not started |
+| 05 | Lost requests | Implemented; manual acceptance pending — `app/(app)/findit/lost-requests/page.tsx`, `src/components/lost/*`, `src/viewmodels/use-lost-requests.ts`, `src/lib/api/endpoints.ts` |
+| 06 | My claims + polish | Implemented; manual acceptance pending — `app/(app)/claims/*`, `src/viewmodels/use-claims.ts`, shared dialogs and mutation feedback |
+| 07 | Production verification | Build and production route smoke checks complete; live backend acceptance pending — `docs/release-checklist.md`, `src/lib/api/client.ts` |
 
 ## Architecture invariants
 
@@ -44,7 +47,7 @@ Keep this file short. Read the phase specs + code for detail.
 ## Open
 
 - Complete Phase 01 and Phase 02 manual acceptance checks.
-- Add the test scripts and dependencies required by the phase specs when those phases call for them; `package.json` currently has no test script.
+- Add test tooling and the Phase 06 unit/Playwright coverage; `package.json` currently has no test script or test dependencies, and installing packages requires approval.
 
 ## Context files (read order for new work)
 

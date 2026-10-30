@@ -10,7 +10,7 @@ export interface ApiCallOptions {
 }
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
   "https://campus-os-backend-8sjf.onrender.com";
 
 export async function apiCall<T>(
