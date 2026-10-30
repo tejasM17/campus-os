@@ -1,5 +1,7 @@
 import { ArrowDown, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/src/components/providers/theme-provider";
 
 const steps = [
   {
@@ -33,15 +35,16 @@ export default function Home() {
           <span className="text-lg font-semibold tracking-tight">CampusOS</span>
         </a>
         <nav aria-label="Main navigation" className="flex items-center gap-3 text-sm font-medium sm:gap-6">
+          <ThemeToggle />
           <a className="text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="#findit">
             FindIt
           </a>
           <a className="hidden text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:inline" href="#how-it-works">
             How it works <ArrowRight aria-hidden="true" className="size-4" />
           </a>
-          <Link className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="/login">
+          <Button render={<Link href="/login" />} className="min-h-11 px-4">
             Log in
-          </Link>
+          </Button>
         </nav>
       </header>
 
@@ -58,12 +61,12 @@ export default function Home() {
             CampusOS brings your campus lost and found into one clear place. Browse found items, share a claim, and let staff help make the connection.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <a href="#findit" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+            <Button render={<a href="#findit" />} className="h-12 gap-2 px-5 text-sm font-semibold">
               Meet FindIt <ArrowRight aria-hidden="true" className="size-4" />
-            </a>
-            <a href="#how-it-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+            </Button>
+            <Button render={<a href="#how-it-works" />} variant="ghost" className="h-12 gap-2 px-5 text-sm font-semibold">
               See how it works <ArrowDown aria-hidden="true" className="size-4" />
-            </a>
+            </Button>
           </div>
           <p className="mt-7 text-sm text-muted-foreground">A thoughtful start to Track 01: FindIt · Lost &amp; Found</p>
         </div>

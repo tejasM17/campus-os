@@ -15,16 +15,20 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     if (hydrated && !valid) router.replace("/login");
   }, [hydrated, router, valid]);
 
-  if (!hydrated) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-background px-5">
-        <p role="status" className="text-sm text-muted-foreground">
-          Restoring your session...
-        </p>
-      </main>
-    );
-  }
+  const blocked = !hydrated || !valid;
 
-  if (!valid) return null;
-  return children;
+  return (
+    <>
+      <div hidden={blocked} aria-hidden={blocked} inert={blocked}>
+        {children}
+      </div>
+      {blocked && (
+        <main className="flex min-h-screen items-center justify-center bg-background px-5">
+          <p role="status" className="text-sm text-muted-foreground">
+            {hydrated ? "Redirecting to sign in…" : "Restoring your session…"}
+          </p>
+        </main>
+      )}
+    </>
+  );
 }
