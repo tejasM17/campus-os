@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,9 +50,9 @@ export default function FindItFeedPage() {
     <main className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
-          <a href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+          <Link href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
             CampusOS <span className="text-primary">/ FindIt</span>
-          </a>
+          </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <ThemeToggle />
             {profile && <span className="hidden text-sm text-muted-foreground sm:inline">{profile.name}</span>}

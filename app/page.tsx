@@ -42,7 +42,7 @@ export default function Home() {
           <a className="hidden text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:inline" href="#how-it-works">
             How it works <ArrowRight aria-hidden="true" className="size-4" />
           </a>
-          <Button render={<Link href="/login" />} className="min-h-11 px-4">
+          <Button nativeButton={false} render={<Link href="/login" />} className="min-h-11 px-4">
             Log in
           </Button>
         </nav>
@@ -61,10 +61,10 @@ export default function Home() {
             CampusOS brings your campus lost and found into one clear place. Browse found items, share a claim, and let staff help make the connection.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button render={<a href="#findit" />} className="h-12 gap-2 px-5 text-sm font-semibold">
+            <Button nativeButton={false} render={<a href="#findit" />} className="h-12 gap-2 px-5 text-sm font-semibold">
               Meet FindIt <ArrowRight aria-hidden="true" className="size-4" />
             </Button>
-            <Button render={<a href="#how-it-works" />} variant="ghost" className="h-12 gap-2 px-5 text-sm font-semibold">
+            <Button nativeButton={false} render={<a href="#how-it-works" />} variant="ghost" className="h-12 gap-2 px-5 text-sm font-semibold">
               See how it works <ArrowDown aria-hidden="true" className="size-4" />
             </Button>
           </div>

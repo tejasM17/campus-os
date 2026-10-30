@@ -4,8 +4,8 @@ Keep this file short. Read the phase specs + code for detail.
 
 ## Phase
 
-- **Phase 01 — Foundation, API client, auth** — In progress
-- Next: finish Phase 01 acceptance checks, then Phase 02 (Found items gallery)
+- **Phase 03 — Item detail + claims** — Implemented; manual acceptance pending
+- Next: Phase 04 (Staff posting + resolution)
 
 ## Stack (quick)
 
@@ -25,7 +25,7 @@ Keep this file short. Read the phase specs + code for detail.
 | --- | --- | --- |
 | 01 | Foundation, API client, auth | In progress — `src/lib/api/*`, `src/store/session.ts`, `app/login/page.tsx`, `src/components/auth/*` |
 | 02 | Found items gallery | Implemented; manual acceptance pending — `app/(app)/findit/page.tsx`, `src/viewmodels/use-found-posts.ts`, `src/components/findit/*` |
-| 03 | Item detail + claims | Not started |
+| 03 | Item detail + claims | Implemented; manual acceptance pending — `app/(app)/findit/[postId]/page.tsx`, `src/viewmodels/use-post.ts`, `src/viewmodels/use-claims.ts`, `src/components/findit/*` |
 | 04 | Staff posting + resolution | Not started |
 | 05 | Lost requests | Not started |
 | 06 | My claims + polish | Not started |
@@ -42,7 +42,7 @@ Keep this file short. Read the phase specs + code for detail.
 
 ## Open
 
-- Complete and verify Phase 01 against its manual acceptance check.
+- Complete Phase 01 and Phase 02 manual acceptance checks.
 - Add the test scripts and dependencies required by the phase specs when those phases call for them; `package.json` currently has no test script.
 
 ## Context files (read order for new work)
