@@ -1,69 +1,143 @@
-import Image from "next/image";
+import { ArrowDown, ArrowRight, Search } from "lucide-react";
+
+const steps = [
+  {
+    number: "01",
+    title: "Browse found items",
+    description:
+      "Look through items reported by campus office staff and open the details when something looks familiar.",
+  },
+  {
+    number: "02",
+    title: "Share what you know",
+    description:
+      "Send a claim with details that help staff confirm an item belongs to you.",
+  },
+  {
+    number: "03",
+    title: "Bring it back",
+    description:
+      "Staff review claims and record when an item has been returned to its owner.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="min-h-screen overflow-hidden bg-background text-foreground">
+      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
+        <a href="#top" className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+          <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-lg font-semibold text-primary-foreground">
+            C
+          </span>
+          <span className="text-lg font-semibold tracking-tight">CampusOS</span>
+        </a>
+        <nav aria-label="Main navigation" className="flex items-center gap-5 text-sm font-medium sm:gap-8">
+          <a className="text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="#findit">
+            FindIt
+          </a>
+          <a className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="#how-it-works">
+            How it works <ArrowRight aria-hidden="true" className="size-4" />
+          </a>
+        </nav>
+      </header>
+
+      <section id="top" className="mx-auto grid w-full max-w-7xl items-center gap-14 px-5 pb-20 pt-10 sm:px-8 sm:pb-28 sm:pt-16 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16 lg:px-12 lg:pb-32 lg:pt-20">
+        <div className="max-w-2xl">
+          <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
+            Campus, looking after its own
+          </p>
+          <h1 className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+            Lost something? <span className="text-primary">Let’s find it.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground sm:text-xl">
+            CampusOS brings your campus lost and found into one clear place. Browse found items, share a claim, and let staff help make the connection.
+          </p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a href="#findit" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+              Meet FindIt <ArrowRight aria-hidden="true" className="size-4" />
+            </a>
+            <a href="#how-it-works" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+              See how it works <ArrowDown aria-hidden="true" className="size-4" />
+            </a>
+          </div>
+          <p className="mt-7 text-sm text-muted-foreground">A thoughtful start to Track 01: FindIt · Lost &amp; Found</p>
+        </div>
+
+        <div aria-label="FindIt helps connect found items, claims, and lost reports" role="img" className="relative mx-auto w-full max-w-xl">
+          <div className="absolute -inset-5 rounded-[2rem] bg-primary/[0.06] sm:-inset-8" />
+          <div className="relative rounded-2xl border border-border bg-card p-5 shadow-[0_20px_60px_-35px_rgba(38,45,90,0.32)] sm:p-7">
+            <div className="flex items-center justify-between border-b border-border pb-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">CampusOS / Track 01</p>
+                <p className="mt-1 text-xl font-semibold tracking-tight">FindIt</p>
+              </div>
+              <span className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">Lost &amp; Found</span>
+            </div>
+            <div className="relative my-6 flex min-h-52 items-center justify-center overflow-hidden rounded-xl bg-muted sm:min-h-64">
+              <div className="absolute size-44 rounded-full border border-primary/15 sm:size-56" />
+              <div className="absolute size-32 rounded-full border border-primary/20 sm:size-40" />
+              <div className="relative flex size-20 items-center justify-center rounded-2xl bg-card text-primary shadow-sm sm:size-24">
+                <Search aria-hidden="true" className="size-9 sm:size-11" strokeWidth={1.6} />
+              </div>
+              <span className="absolute left-[16%] top-[22%] size-2 rounded-full bg-primary/40" />
+              <span className="absolute bottom-[20%] right-[19%] size-3 rounded-full bg-primary/30" />
+            </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {[
+                ["01", "Found items"],
+                ["02", "Claims"],
+                ["03", "Lost reports"],
+              ].map(([number, label]) => (
+                <div key={number} className="rounded-lg border border-border p-3 sm:p-4">
+                  <p className="text-xs font-medium text-muted-foreground">{number}</p>
+                  <p className="mt-2 text-xs font-semibold leading-4 sm:text-sm">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="absolute -bottom-5 -left-2 rounded-xl border border-border bg-card px-4 py-3 shadow-sm sm:-left-6">
+            <p className="text-xs font-medium text-muted-foreground">Made for campus</p>
+            <p className="mt-0.5 text-sm font-semibold">One helpful connection at a time</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="findit" className="border-y border-border bg-card">
+        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[0.7fr_1.3fr] lg:items-center lg:px-12">
+          <div>
+            <p className="text-sm font-semibold text-primary">FindIt · Lost &amp; Found</p>
+            <h2 className="mt-3 max-w-md text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-4xl">A small moment of relief, made easier.</h2>
+          </div>
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+            FindIt gives office staff a place to post found items and review claims. Students and faculty can browse, explain why an item is theirs, or report something they have lost.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section id="how-it-works" className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
+        <div className="max-w-2xl">
+          <p className="text-sm font-semibold text-primary">A clear path back</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">From found to found again.</h2>
+          <p className="mt-4 text-base leading-7 text-muted-foreground">Three simple steps bring the right people together.</p>
         </div>
-      </main>
-    </div>
+        <ol className="mt-10 grid gap-4 md:grid-cols-3">
+          {steps.map((step) => (
+            <li key={step.number} className="rounded-xl border border-border bg-card p-6 sm:p-7">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-sm font-semibold text-primary">{step.number}</span>
+              <h3 className="mt-6 text-lg font-semibold tracking-tight">{step.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.description}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <footer className="border-t border-border">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-5 py-7 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+          <p className="font-semibold text-foreground">CampusOS</p>
+          <p>FindIt · Track 01 · Built for the campus community</p>
+        </div>
+      </footer>
+    </main>
   );
 }
