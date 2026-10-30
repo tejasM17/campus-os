@@ -27,7 +27,8 @@ export default function FindItFeedPage() {
   const [status, setStatus] = useState<FoundPostStatus>("active");
   const postsQuery = useFoundPosts(status, hasValidSession({ token, expiresAt }));
   const posts = useMemo(
-    () => postsQuery.data?.pages.flatMap((page) => page.items) ?? [],
+    () => (postsQuery.data?.pages.flatMap((page) => page.items) ?? [])
+      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at)),
     [postsQuery.data],
   );
 

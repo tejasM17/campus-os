@@ -19,10 +19,12 @@ Keep this file short. Read the phase specs + code for detail.
 
 ## Done / in progress
 
+- UI polish: restored the dark theme's neutral black and dark-gray palette in `app/globals.css`.
+
 | Phase | Feature | Status / key locations |
 | --- | --- | --- |
 | 01 | Foundation, API client, auth | In progress — `src/lib/api/*`, `src/store/session.ts`, `app/login/page.tsx`, `src/components/auth/*` |
-| 02 | Found items gallery | Not started — `app/(app)/findit/page.tsx` is currently a signed-in placeholder |
+| 02 | Found items gallery | Implemented; manual acceptance pending — `app/(app)/findit/page.tsx`, `src/viewmodels/use-found-posts.ts`, `src/components/findit/*` |
 | 03 | Item detail + claims | Not started |
 | 04 | Staff posting + resolution | Not started |
 | 05 | Lost requests | Not started |
