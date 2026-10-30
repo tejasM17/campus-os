@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { ClaimStatusBadge } from "@/src/components/findit/claim-status-badge";
 import { ApiError } from "@/src/lib/api/errors";
 import type { Claim, Profile } from "@/src/lib/api/types";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 function initials(name: string) {
   return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0] ?? "").join("").toUpperCase() || "?";
@@ -16,14 +18,35 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(value));
 }
 
-export function ClaimsList({ claims, profile, withdrawingClaimId, onWithdraw }: {
+export function ClaimsList({ claims, profile, withdrawingClaimId, onWithdraw, resolved = false, resolutionClaimId, onResolve, onUpdateResolution }: {
   claims: Claim[];
   profile: Profile | null;
   withdrawingClaimId: string | null;
   onWithdraw: (claimId: string) => Promise<void>;
+  resolved?: boolean;
+  resolutionClaimId?: string;
+  onResolve?: (claimId: string, note?: string) => Promise<void>;
+  onUpdateResolution?: (claimId: string, note?: string) => Promise<void>;
 }) {
   const [lockedClaims, setLockedClaims] = useState<string[]>([]);
+  const [selectedClaim, setSelectedClaim] = useState<string | null>(null);
+  const [note, setNote] = useState("");
+  const [resolutionError, setResolutionError] = useState<string | null>(null);
+  const [savingResolution, setSavingResolution] = useState(false);
   const isStaff = profile?.role === "office_staff";
+  const canManageResolution = isStaff && (resolved ? Boolean(onUpdateResolution) : Boolean(onResolve));
+
+  async function saveResolution() {
+    if (!selectedClaim) return;
+    setSavingResolution(true); setResolutionError(null);
+    try {
+      if (resolved) await onUpdateResolution?.(selectedClaim, note.trim() || undefined);
+      else await onResolve?.(selectedClaim, note.trim() || undefined);
+      setSelectedClaim(null);
+    } catch (error) {
+      setResolutionError(error instanceof Error ? error.message : "Resolution could not be saved.");
+    } finally { setSavingResolution(false); }
+  }
 
   return (
     <section aria-labelledby="claims-heading" className="rounded-2xl border border-border bg-card p-5 sm:p-7">
@@ -75,12 +98,27 @@ export function ClaimsList({ claims, profile, withdrawingClaimId, onWithdraw }: 
                     {withdrawingClaimId === claim.claim_id ? "Withdrawing…" : "Withdraw"}
                   </Button>
                 )}
+                {canManageResolution && !resolved && claim.decision === "pending" && (
+                  <Button type="button" className="mt-4 min-h-11" onClick={() => { setSelectedClaim(claim.claim_id); setNote(""); setResolutionError(null); }}>Resolve with this claim</Button>
+                )}
+                {canManageResolution && resolved && claim.claim_id === resolutionClaimId && (
+                  <Button type="button" variant="outline" className="mt-4 min-h-11" onClick={() => { setSelectedClaim(claim.claim_id); setNote(""); setResolutionError(null); }}>Edit resolution</Button>
+                )}
                 {locked && <p className="mt-4 text-sm text-muted-foreground" role="status">This claim can no longer be withdrawn because staff have started reviewing it.</p>}
               </li>
             );
           })}
         </ul>
       )}
+      <Dialog open={Boolean(selectedClaim)} onOpenChange={(open) => { if (!open && !savingResolution) setSelectedClaim(null); }}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{resolved ? "Change resolution" : "Resolve found item"}</DialogTitle><DialogDescription>{resolved ? "Choose the approved claim and update the optional staff note." : "This claim will be approved and all other claims will be rejected."}</DialogDescription></DialogHeader>
+          {resolved && <div><label htmlFor="resolution-claim" className="mb-1.5 block font-medium">Approved claim</label><select id="resolution-claim" className="min-h-11 w-full rounded-lg border border-input bg-background px-3" value={selectedClaim ?? ""} onChange={(event) => setSelectedClaim(event.target.value)}>{claims.map((claim) => <option key={claim.claim_id} value={claim.claim_id}>{claim.claimant_name} · {claim.claim_id}</option>)}</select></div>}
+          <div><label htmlFor="resolution-note" className="mb-1.5 block font-medium">Note (optional)</label><Textarea id="resolution-note" value={note} maxLength={1000} onChange={(event) => setNote(event.target.value)} /></div>
+          {resolutionError && <p className="text-sm text-destructive" role="alert">{resolutionError}</p>}
+          <DialogFooter><Button type="button" variant="outline" className="min-h-11" onClick={() => setSelectedClaim(null)} disabled={savingResolution}>Cancel</Button><Button type="button" className="min-h-11" onClick={() => void saveResolution()} disabled={savingResolution || !selectedClaim}>{savingResolution ? "Saving…" : resolved ? "Save resolution" : "Resolve item"}</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

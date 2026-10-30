@@ -13,6 +13,8 @@ import type { FoundPostStatus } from "@/src/lib/api/endpoints";
 import { EmptyState } from "@/src/components/findit/empty-state";
 import { PostCard } from "@/src/components/findit/post-card";
 import { PostCardSkeleton } from "@/src/components/findit/post-card-skeleton";
+import { PostFormDialog } from "@/src/components/findit/post-form-dialog";
+import { useCreatePost } from "@/src/viewmodels/use-staff-workflows";
 
 const filters: { label: string; value: FoundPostStatus }[] = [
   { label: "Active", value: "active" },
@@ -26,6 +28,8 @@ export default function FindItFeedPage() {
   const expiresAt = useSessionStore((state) => state.expiresAt);
   const logout = useSessionStore((state) => state.logout);
   const [status, setStatus] = useState<FoundPostStatus>("active");
+  const [postDialogOpen, setPostDialogOpen] = useState(false);
+  const createPost = useCreatePost();
   const postsQuery = useFoundPosts(status, hasValidSession({ token, expiresAt }));
   const posts = useMemo(
     () => (postsQuery.data?.pages.flatMap((page) => page.items) ?? [])
@@ -80,7 +84,7 @@ export default function FindItFeedPage() {
             </p>
           </div>
           {isStaff && (
-            <Button type="button" className="min-h-11 w-full gap-2 px-4 sm:w-auto" onClick={() => undefined}>
+            <Button type="button" className="min-h-11 w-full gap-2 px-4 sm:w-auto" onClick={() => setPostDialogOpen(true)}>
               <Plus aria-hidden="true" className="size-4" /> Post found item
             </Button>
           )}
@@ -145,6 +149,10 @@ export default function FindItFeedPage() {
           </>
         )}
       </section>
+      {isStaff && <PostFormDialog key={String(postDialogOpen)} open={postDialogOpen} onOpenChange={setPostDialogOpen} submitting={createPost.isPending} onSubmit={async (input) => {
+        try { await createPost.mutateAsync(input); toast.add({ title: "Found item posted", description: "It is now at the top of the gallery." }); }
+        catch (error) { toast.add({ title: "Couldn’t post item", description: error instanceof Error ? error.message : "Please try again.", priority: "high" }); throw error; }
+      }} />}
     </main>
   );
 }

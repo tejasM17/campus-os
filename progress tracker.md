@@ -5,7 +5,8 @@ Keep this file short. Read the phase specs + code for detail.
 ## Phase
 
 - **Phase 03 — Item detail + claims** — Implemented; manual acceptance pending
-- Next: Phase 04 (Staff posting + resolution)
+- **Phase 04 — Staff posting + resolution** — Implemented; manual acceptance pending
+- Next: Phase 05 (Lost requests)
 
 ## Stack (quick)
 
@@ -26,7 +27,7 @@ Keep this file short. Read the phase specs + code for detail.
 | 01 | Foundation, API client, auth | In progress — `src/lib/api/*`, `src/store/session.ts`, `app/login/page.tsx`, `src/components/auth/*` |
 | 02 | Found items gallery | Implemented; manual acceptance pending — `app/(app)/findit/page.tsx`, `src/viewmodels/use-found-posts.ts`, `src/components/findit/*` |
 | 03 | Item detail + claims | Implemented; manual acceptance pending — `app/(app)/findit/[postId]/page.tsx`, `src/viewmodels/use-post.ts`, `src/viewmodels/use-claims.ts`, `src/components/findit/*` |
-| 04 | Staff posting + resolution | Not started |
+| 04 | Staff posting + resolution | Implemented; manual acceptance pending — `src/components/findit/post-form-dialog.tsx`, `src/viewmodels/use-staff-workflows.ts`, `src/lib/api/endpoints.ts`, gallery and item detail screens |
 | 05 | Lost requests | Not started |
 | 06 | My claims + polish | Not started |
 | 07 | Production verification | Not started |

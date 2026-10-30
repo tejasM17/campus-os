@@ -37,6 +37,68 @@ export function withdrawClaimRequest(claimId: string) {
   return apiCall<void>("DELETE", `/api/v1/findit/claims/${encodeURIComponent(claimId)}`);
 }
 
+export interface FoundPostInput {
+  title: string;
+  description: string;
+  location_found: string;
+  found_on: string;
+  images?: File[];
+  remove_images?: boolean;
+}
+
+function postFormData(input: Partial<FoundPostInput>) {
+  const data = new FormData();
+  if (input.title !== undefined) data.set("title", input.title);
+  if (input.description !== undefined) data.set("description", input.description);
+  if (input.location_found !== undefined) data.set("location_found", input.location_found);
+  if (input.found_on !== undefined) data.set("found_on", input.found_on);
+  input.images?.forEach((image) => data.append("images", image));
+  if (input.remove_images) data.set("remove_images", "true");
+  return data;
+}
+
+export function createPostRequest(input: FoundPostInput) {
+  return apiCall<FoundPost>("POST", "/api/v1/findit/posts", { formData: postFormData(input) });
+}
+
+export function updatePostRequest(postId: string, input: Partial<FoundPostInput> & { status?: FoundPostStatus }) {
+  const data = postFormData(input);
+  if (input.status) data.set("status", input.status);
+  return apiCall<FoundPost>("PATCH", `/api/v1/findit/posts/${encodeURIComponent(postId)}`, { formData: data });
+}
+
+export function deletePostRequest(postId: string) {
+  return apiCall<void>("DELETE", `/api/v1/findit/posts/${encodeURIComponent(postId)}`);
+}
+
+export interface Resolution {
+  claim_id: string;
+  claimant_email: string;
+  note?: string;
+  resolved_by: string;
+  resolved_at: string;
+}
+
+export function getResolutionRequest(postId: string) {
+  return apiCall<Resolution>("GET", `/api/v1/findit/posts/${encodeURIComponent(postId)}/resolution`);
+}
+
+export function resolvePostRequest(postId: string, claim_id: string, note?: string) {
+  return apiCall<Resolution>("POST", `/api/v1/findit/posts/${encodeURIComponent(postId)}/resolution`, {
+    body: { claim_id, ...(note ? { note } : {}) },
+  });
+}
+
+export function updateResolutionRequest(postId: string, claim_id: string, note?: string) {
+  return apiCall<Resolution>("PATCH", `/api/v1/findit/posts/${encodeURIComponent(postId)}/resolution`, {
+    body: { claim_id, ...(note ? { note } : {}) },
+  });
+}
+
+export function undoResolutionRequest(postId: string) {
+  return apiCall<void>("DELETE", `/api/v1/findit/posts/${encodeURIComponent(postId)}/resolution`);
+}
+
 export interface LoginResponse {
   access_token: string;
   expires_in: number;
