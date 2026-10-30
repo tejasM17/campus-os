@@ -5,7 +5,8 @@ https://campus-os-backend-8sjf.onrender.com and is treated as read-only truth:
 this project never mocks data, never invents fields, and never builds UI for
 endpoints that don't exist in the API cookbook.
 
-Why any rule exists is in `docs/project-doc.md`. This file is the rules.
+Why any rule exists is in `docs/project-doc.md`. This file is the rules. 
+- for every meaning full implementaions, update the `progress tracker.md` 
 
 ## Stack
 

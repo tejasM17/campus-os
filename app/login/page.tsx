@@ -5,6 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/src/lib/api/errors";
 import { useSessionStore } from "@/src/store/session";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ThemeToggle } from "@/src/components/providers/theme-provider";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,8 +39,11 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/50 px-5 py-12">
-      <section className="w-full max-w-md rounded-2xl border border-border bg-card p-7 shadow-sm sm:p-9">
+    <main className="relative flex min-h-screen items-center justify-center bg-muted/50 px-5 py-12">
+      <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
+      <Card className="w-full max-w-md gap-0 rounded-2xl p-7 shadow-sm sm:p-9">
         <Link href="/" className="text-sm font-semibold tracking-tight text-primary">
           CampusOS <span className="text-muted-foreground">/ FindIt</span>
         </Link>
@@ -49,20 +57,20 @@ export default function LoginPage() {
         </p>
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="email">Campus email</label>
-            <input
+            <Label htmlFor="email">Campus email</Label>
+            <Input
               id="email"
               type="email"
               autoComplete="email"
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="min-h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-11 w-full px-3 text-sm"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="otp">One-time password</label>
-            <input
+            <Label htmlFor="otp">One-time password</Label>
+            <Input
               id="otp"
               type="text"
               inputMode="numeric"
@@ -70,31 +78,32 @@ export default function LoginPage() {
               required
               value={otp}
               onChange={(event) => setOtp(event.target.value)}
-              className="min-h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-11 w-full px-3 text-sm"
             />
           </div>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-          <button
+          <Button
             type="submit"
             disabled={submitting}
-            className="min-h-11 w-full rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-wait disabled:opacity-60"
+            className="h-11 w-full px-4 text-sm font-semibold disabled:cursor-wait"
           >
             {submitting ? "Signing in…" : isAdminLogin ? "Sign in as admin" : "Sign in"}
-          </button>
+          </Button>
         </form>
-        <button
+        <Button
           type="button"
           onClick={() => {
             setIsAdminLogin((current) => !current);
             setError(null);
           }}
-          className="mt-5 min-h-11 text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+          variant="link"
+          className="mt-3 min-h-11 px-0 text-sm font-medium"
         >
           {isAdminLogin
             ? "Sign in as student, faculty, or staff"
             : "Admin account? Sign in as admin"}
-        </button>
-      </section>
+        </Button>
+      </Card>
     </main>
   );
 }

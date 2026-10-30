@@ -1,5 +1,18 @@
 import { apiCall } from "./client";
-import type { Profile } from "./types";
+import type { Paged, Profile, FoundPost } from "./types";
+
+export type FoundPostStatus = "active" | "archived";
+
+export function listPostsRequest(
+  status: FoundPostStatus,
+  cursor?: string,
+) {
+  const params = new URLSearchParams();
+  if (status === "archived") params.set("status", status);
+  if (cursor) params.set("cursor", cursor);
+  const query = params.toString();
+  return apiCall<Paged<FoundPost>>("GET", `/api/v1/findit/posts${query ? `?${query}` : ""}`);
+}
 
 export interface LoginResponse {
   access_token: string;
