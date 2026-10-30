@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowRight, Search } from "lucide-react";
+import Link from "next/link";
 
 const steps = [
   {
@@ -31,13 +32,16 @@ export default function Home() {
           </span>
           <span className="text-lg font-semibold tracking-tight">CampusOS</span>
         </a>
-        <nav aria-label="Main navigation" className="flex items-center gap-5 text-sm font-medium sm:gap-8">
+        <nav aria-label="Main navigation" className="flex items-center gap-3 text-sm font-medium sm:gap-6">
           <a className="text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="#findit">
             FindIt
           </a>
-          <a className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="#how-it-works">
+          <a className="hidden text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:inline" href="#how-it-works">
             How it works <ArrowRight aria-hidden="true" className="size-4" />
           </a>
+          <Link className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" href="/login">
+            Log in
+          </Link>
         </nav>
       </header>
 
