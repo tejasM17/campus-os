@@ -10,8 +10,6 @@ import { ClaimStatusBadge } from "@/src/components/findit/claim-status-badge";
 import { ApiError } from "@/src/lib/api/errors";
 import { getPostRequest } from "@/src/lib/api/endpoints";
 import { useSessionStore, hasValidSession } from "@/src/store/session";
-import { ThemeToggle } from "@/src/components/providers/theme-provider";
-import { useRouter } from "next/navigation";
 import { useMyClaims, useWithdrawClaim } from "@/src/viewmodels/use-claims";
 import { useQueries } from "@tanstack/react-query";
 
@@ -20,10 +18,8 @@ function formatDate(value: string) {
 }
 
 export default function MyClaimsPage() {
-  const router = useRouter();
   const token = useSessionStore((state) => state.token);
   const expiresAt = useSessionStore((state) => state.expiresAt);
-  const logout = useSessionStore((state) => state.logout);
   const enabled = hasValidSession({ token, expiresAt });
   const claimsQuery = useMyClaims(enabled);
   const claims = useMemo(() => claimsQuery.data?.pages.flatMap((page) => page.items) ?? [], [claimsQuery.data]);
@@ -50,19 +46,15 @@ export default function MyClaimsPage() {
   }
 
   return <main className="min-h-screen bg-background">
-    <header className="border-b border-border bg-card"><div className="mx-auto flex min-h-16 max-w-5xl items-center justify-between gap-4 px-5 sm:px-8">
-      <Link href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">CampusOS <span className="text-primary">/ FindIt</span></Link>
-      <div className="flex items-center gap-2"><nav aria-label="FindIt" className="hidden items-center gap-1 text-sm sm:flex"><Link href="/findit" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">Found items</Link><Link href="/findit/lost-requests" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">Lost reports</Link><span aria-current="page" className="rounded-md bg-muted px-3 py-2 font-medium">My claims</span></nav><ThemeToggle/><Button type="button" variant="ghost" className="min-h-11 px-3" onClick={() => { logout(); router.replace("/login"); }}>Sign out</Button></div>
-    </div></header>
-    <section className="mx-auto max-w-5xl px-5 pb-16 pt-9 sm:px-8 sm:pt-12">
+    <section className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12 2xl:px-16">
       <p className="text-sm font-semibold text-primary">FindIt · Your activity</p>
       <h1 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">My claims</h1>
       <p className="mt-3 text-base leading-7 text-muted-foreground">Track the claims you’ve submitted for found items.</p>
-      {claimsQuery.isPending ? <div className="mt-8 space-y-4" aria-label="Loading your claims">{Array.from({ length: 3 }, (_, i) => <div key={i} className="rounded-xl border border-border p-5"><Skeleton className="h-6 w-2/3"/><Skeleton className="mt-4 h-4 w-full"/><Skeleton className="mt-3 h-4 w-1/3"/></div>)}</div>
+      {claimsQuery.isPending ? <div className="mt-8 grid grid-cols-12 gap-4" aria-label="Loading your claims">{Array.from({ length: 3 }, (_, i) => <div key={i} className="col-span-12 rounded-xl border border-border p-5 sm:col-span-6 2xl:col-span-4"><Skeleton className="h-6 w-2/3"/><Skeleton className="mt-4 h-4 w-full"/><Skeleton className="mt-3 h-4 w-1/3"/></div>)}</div>
         : claimsQuery.isError ? <div className="mt-8 rounded-xl border border-destructive/30 bg-destructive/5 p-6" role="alert"><h2 className="font-semibold">Your claims couldn’t be loaded</h2><p className="mt-1 text-sm text-muted-foreground">{claimsQuery.error.message}</p><Button type="button" variant="outline" className="mt-4 min-h-11" onClick={() => void claimsQuery.refetch()}>Try again</Button></div>
         : claims.length === 0 ? <div className="mt-8 flex min-h-64 flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center"><ClipboardCheck aria-hidden="true" className="size-8 text-muted-foreground"/><h2 className="mt-4 text-lg font-semibold">You haven’t claimed anything yet.</h2><p className="mt-2 text-sm text-muted-foreground">Browse found items to submit your first claim.</p><Button nativeButton={false} render={<Link href="/findit"/>} className="mt-5 min-h-11">Browse found items</Button></div>
-        : <><ul className="mt-8 grid gap-4 md:grid-cols-2">{claims.map((claim, index) => { const postQuery = posts[index]; const post = postQuery?.data; const busy = withdraw.isPending && withdraw.variables === claim.claim_id; const canWithdraw = claim.status === "active" && claim.decision === "pending";
-          return <li key={claim.claim_id} className="flex min-w-0 flex-col rounded-xl border border-border bg-card p-5 sm:p-6">
+        : <><ul className="mt-8 grid grid-cols-12 gap-4">{claims.map((claim, index) => { const postQuery = posts[index]; const post = postQuery?.data; const busy = withdraw.isPending && withdraw.variables === claim.claim_id; const canWithdraw = claim.status === "active" && claim.decision === "pending";
+          return <li key={claim.claim_id} className="col-span-12 flex min-w-0 flex-col rounded-xl border border-border bg-card p-5 sm:col-span-6 sm:p-6 2xl:col-span-4">
             <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0"><p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Found item</p>{post ? <Link className="mt-1 inline-block max-w-full truncate text-lg font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-ring" href={`/findit/${encodeURIComponent(claim.post_id)}`}>{post.title}</Link> : <p className="mt-1 truncate text-lg font-semibold">{postQuery?.isPending ? "Loading item…" : "Item details unavailable"}</p>}</div><ClaimStatusBadge decision={claim.decision}/></div>
             <p className="mt-4 whitespace-pre-wrap break-words text-sm leading-6">{claim.message}</p>
             <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 mt-5"><p className="text-sm text-muted-foreground">Submitted <time dateTime={claim.created_at}>{formatDate(claim.created_at)}</time></p>{canWithdraw && <Button type="button" variant="outline" className="min-h-11" disabled={busy} onClick={() => void withdrawClaim(claim.claim_id)}>{busy ? "Withdrawing…" : "Withdraw"}</Button>}</div>

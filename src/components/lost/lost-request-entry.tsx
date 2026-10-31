@@ -7,10 +7,11 @@ import { useDeleteLostRequest, useUpdateLostRequest } from "@/src/viewmodels/use
 import { LostRequestCard } from "@/src/components/lost/lost-request-card";
 import { LostRequestFormDialog } from "@/src/components/lost/lost-request-form-dialog";
 
-export function LostRequestEntry({ request, profile, isStaff }: {
+export function LostRequestEntry({ request, profile, isStaff, wide = false }: {
   request: LostRequest;
   profile: Profile;
   isStaff: boolean;
+  wide?: boolean;
 }) {
   const [editOpen, setEditOpen] = useState(false);
   const update = useUpdateLostRequest(request.request_id);
@@ -43,6 +44,7 @@ export function LostRequestEntry({ request, profile, isStaff }: {
       isOwner={isOwner}
       showPhone={isStaff}
       busy={busy}
+      wide={wide}
       onEdit={() => setEditOpen(true)}
       onArchive={() => void changeStatus("archived")}
       onReactivate={() => void changeStatus("active")}

@@ -27,7 +27,7 @@ const steps = [
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
-      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
+      <header className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-5 py-5 sm:px-8 lg:px-12 2xl:px-16">
         <a href="#top" className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
           <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-lg font-semibold text-primary-foreground">
             C
@@ -48,7 +48,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <section id="top" className="mx-auto grid w-full max-w-7xl items-center gap-14 px-5 pb-20 pt-10 sm:px-8 sm:pb-28 sm:pt-16 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16 lg:px-12 lg:pb-32 lg:pt-20">
+      <section id="top" className="mx-auto grid w-full max-w-[120rem] items-center gap-14 px-5 pb-20 pt-10 sm:px-8 sm:pb-28 sm:pt-16 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16 lg:px-12 lg:pb-32 lg:pt-20 2xl:gap-24 2xl:px-16">
         <div className="max-w-2xl">
           <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
@@ -111,7 +111,7 @@ export default function Home() {
       </section>
 
       <section id="findit" className="border-y border-border bg-card">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[0.7fr_1.3fr] lg:items-center lg:px-12">
+        <div className="mx-auto grid w-full max-w-[120rem] gap-8 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[0.7fr_1.3fr] lg:items-center lg:px-12 2xl:px-16">
           <div>
             <p className="text-sm font-semibold text-primary">FindIt · Lost &amp; Found</p>
             <h2 className="mt-3 max-w-md text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-4xl">A small moment of relief, made easier.</h2>
@@ -122,7 +122,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="how-it-works" className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
+      <section id="how-it-works" className="mx-auto w-full max-w-[120rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-12 2xl:px-16">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-primary">A clear path back</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">From found to found again.</h2>
@@ -140,7 +140,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-5 py-7 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+        <div className="mx-auto flex w-full max-w-[120rem] flex-col gap-2 px-5 py-7 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12 2xl:px-16">
           <p className="font-semibold text-foreground">CampusOS</p>
           <p>FindIt · Track 01 · Built for the campus community</p>
         </div>

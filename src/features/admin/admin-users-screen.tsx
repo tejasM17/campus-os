@@ -66,6 +66,7 @@ function FieldInput({
   onChange,
   type = "text",
   required = false,
+  placeholder,
   maxLength,
   minLength,
   pattern,
@@ -80,6 +81,7 @@ function FieldInput({
   onChange?: (value: string) => void;
   type?: string;
   required?: boolean;
+  placeholder?: string;
   maxLength?: number;
   minLength?: number;
   pattern?: string;
@@ -91,7 +93,7 @@ function FieldInput({
   return (
     <Field data-invalid={Boolean(error)}>
       <FieldLabel htmlFor={id}>{label}{required ? " *" : ""}</FieldLabel>
-      <Input id={id} name={id} type={type} required={required} maxLength={maxLength} minLength={minLength} pattern={pattern} list={list} value={value} readOnly={readOnly} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined} onChange={onChange ? (event) => onChange(event.target.value) : undefined} />
+      <Input id={id} name={id} type={type} required={required} maxLength={maxLength} minLength={minLength} pattern={pattern} list={list} placeholder={placeholder} value={value} readOnly={readOnly} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined} onChange={onChange ? (event) => onChange(event.target.value) : undefined} />
       {hint && <FieldDescription id={`${id}-hint`}>{hint}</FieldDescription>}
       {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
     </Field>
@@ -142,6 +144,11 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
     setErrors({});
     setRequestError(null);
     const normalizedEmail = (values.email_id ?? "").trim().toLowerCase();
+    const phoneNumber = (values.phone_number ?? "").trim();
+    if (!/^\d{10}$/.test(phoneNumber)) {
+      setErrors({ phone_number: "Enter exactly 10 digits." });
+      return;
+    }
     if (!adminDomain) {
       setRequestError("Could not determine the team email domain from the admin profile.");
       return;
@@ -154,7 +161,7 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
       role,
       name: (values.name ?? "").trim(),
       email_id: normalizedEmail,
-      phone_number: (values.phone_number ?? "").trim(),
+      phone_number: phoneNumber,
     };
     const input: CreateAdminUserInput = role === "student"
       ? { ...common, role, usn: (values.usn ?? "").trim().toUpperCase(), dept: (values.dept ?? "").trim() }
@@ -194,9 +201,9 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
           <FieldGroup className="grid gap-4 sm:grid-cols-2">
             <FieldInput id="name" label="Full name" required minLength={2} maxLength={100} value={values.name ?? ""} onChange={(value) => set("name", value)} error={errors.name} />
             <FieldInput id="email_id" label="Campus email" type="email" required value={values.email_id ?? ""} onChange={(value) => set("email_id", value)} hint={adminDomain ? `Must end with @${adminDomain}` : "Team domain is read from the administrator profile."} error={errors.email_id} />
-            <FieldInput id="phone_number" label="Phone number" type="tel" required pattern="\+?[0-9]{10,15}" maxLength={16} value={values.phone_number ?? ""} onChange={(value) => set("phone_number", value)} hint="10–15 digits; an initial + is allowed." error={errors.phone_number} />
+            <FieldInput id="phone_number" label="Phone number" type="tel" required pattern="[0-9]{10}" maxLength={10} value={values.phone_number ?? ""} onChange={(value) => { set("phone_number", value.replace(/\D/g, "").slice(0, 10)); setErrors((current) => ({ ...current, phone_number: "" })); }} hint="Enter exactly 10 digits." error={errors.phone_number} />
             {role === "student" && <>
-              <FieldInput id="usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" value={values.usn ?? ""} onChange={(value) => set("usn", value)} error={errors.usn} />
+              <FieldInput id="usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" placeholder="1CF24CS001" value={values.usn ?? ""} onChange={(value) => set("usn", value)} hint="5–20 letters or numbers, e.g. 1CF24CS001." error={errors.usn} />
               <FieldInput id="dept" label="Department" required minLength={2} maxLength={60} list="student-departments" value={values.dept ?? ""} onChange={(value) => set("dept", value)} error={errors.dept} />
               <datalist id="student-departments"><option value="CSE"/><option value="ISE"/><option value="ECE"/><option value="MBA"/></datalist>
             </>}
@@ -209,7 +216,7 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
           </FieldGroup>
           {requestError && <Alert variant="destructive" role="alert"><AlertTitle>User could not be created</AlertTitle><AlertDescription>{requestError}</AlertDescription></Alert>}
         </form>
-        <DialogFooter>
+        <DialogFooter className="flex-row justify-end">
           <Button type="button" variant="outline" className="min-h-11" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="submit" form="create-user-form" disabled={create.isPending} className="min-h-11">{create.isPending ? "Creating…" : "Create user"}</Button>
         </DialogFooter>
@@ -270,7 +277,7 @@ function EditUserDialog({ emailId, open, onOpenChange, onSaved }: { emailId: str
                 <FieldInput id="edit-name" label="Full name" required minLength={2} maxLength={100} value={values.name ?? user.name} onChange={(value) => set("name", value)} error={errors.name} />
                 <FieldInput id="edit-phone_number" label="Phone number" type="tel" required pattern="\+?[0-9]{10,15}" value={values.phone_number ?? user.phone_number ?? ""} onChange={(value) => set("phone_number", value)} error={errors.phone_number} />
                 {user.role === "student" && <>
-                  <FieldInput id="edit-usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" value={values.usn ?? user.usn ?? ""} onChange={(value) => set("usn", value)} error={errors.usn} />
+                  <FieldInput id="edit-usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" placeholder="1CF24CS001" value={values.usn ?? user.usn ?? ""} onChange={(value) => set("usn", value)} hint="5–20 letters or numbers, e.g. 1CF24CS001." error={errors.usn} />
                   <FieldInput id="edit-dept" label="Department" required minLength={2} maxLength={60} value={values.dept ?? user.dept ?? ""} onChange={(value) => set("dept", value)} error={errors.dept} />
                 </>}
                 {user.role === "faculty" && <FieldInput id="edit-designation" label="Designation" required minLength={2} maxLength={60} value={values.designation ?? user.designation ?? ""} onChange={(value) => set("designation", value)} error={errors.designation} />}
@@ -282,7 +289,7 @@ function EditUserDialog({ emailId, open, onOpenChange, onSaved }: { emailId: str
               {requestError && <Alert variant="destructive" role="alert"><AlertTitle>Changes could not be saved</AlertTitle><AlertDescription>{requestError}</AlertDescription></Alert>}
             </form>
           </>}
-        <DialogFooter>
+        <DialogFooter className="flex-row justify-end">
           <Button type="button" variant="outline" className="min-h-11" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="submit" form="edit-user-form" disabled={!user || query.isPending || query.isError || update.isPending} className="min-h-11">{update.isPending ? "Saving…" : "Save changes"}</Button>
         </DialogFooter>
@@ -307,8 +314,8 @@ function UserOtp({ user, revealed, onToggle }: { user: AdminUser; revealed: bool
   }
   return <div className="flex flex-wrap items-center gap-2">
     <code aria-label={revealed && user.otp ? `OTP ${user.otp}` : "OTP hidden"} className="min-w-16 rounded bg-muted px-2 py-1 text-xs font-semibold tracking-wider">{revealed ? user.otp ?? "Unavailable" : "••••••"}</code>
-    <Button type="button" variant="ghost" size="icon" className="size-10" aria-label={`${revealed ? "Hide" : "Reveal"} OTP for ${user.email_id}`} onClick={onToggle}>{revealed ? <EyeOff aria-hidden="true"/> : <Eye aria-hidden="true"/>}</Button>
-    {revealed && user.otp && <Button type="button" variant="outline" size="sm" className="min-h-10" onClick={() => void copyOtp()}><Copy aria-hidden="true" data-icon="inline-start"/>{copied ? "Copied" : "Copy"}</Button>}
+    <Button type="button" variant="ghost" size="icon" className="size-11" aria-label={`${revealed ? "Hide" : "Reveal"} OTP for ${user.email_id}`} onClick={onToggle}>{revealed ? <EyeOff aria-hidden="true"/> : <Eye aria-hidden="true"/>}</Button>
+    {revealed && user.otp && <Button type="button" variant="outline" size="sm" className="min-h-11" onClick={() => void copyOtp()}><Copy aria-hidden="true" data-icon="inline-start"/>{copied ? "Copied" : "Copy"}</Button>}
     {copyError && <span role="alert" className="text-xs text-destructive">Clipboard unavailable</span>}
   </div>;
 }
@@ -316,7 +323,7 @@ function UserOtp({ user, revealed, onToggle }: { user: AdminUser; revealed: bool
 function UserActions({ user, onEdit, onRegenerate, onDelete }: { user: AdminUser; onEdit: () => void; onRegenerate: () => void; onDelete: () => void }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="size-10" aria-label={`Actions for ${user.name}`} />}><MoreHorizontal aria-hidden="true"/></DropdownMenuTrigger>
+      <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="size-11" aria-label={`Actions for ${user.name}`} />}><MoreHorizontal aria-hidden="true"/></DropdownMenuTrigger>
       <DropdownMenuContent align="end"><DropdownMenuGroup>
         <DropdownMenuItem onClick={onEdit}><UserRoundPen aria-hidden="true"/>Edit profile</DropdownMenuItem>
         <DropdownMenuItem onClick={onRegenerate}><RotateCw aria-hidden="true"/>Regenerate OTP</DropdownMenuItem>
@@ -406,7 +413,7 @@ export function AdminUsersScreen() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold">Accounts <span className="text-sm font-normal text-muted-foreground">{pages?.[0]?.count ?? ""}</span></h2>
           <ToggleGroup value={[role ?? "all"]} onValueChange={(values) => { const selected = values.at(-1); setRole(selected === "student" || selected === "faculty" || selected === "office_staff" ? selected : undefined); }} aria-label="Filter users by role" variant="outline" spacing={1} className="w-full flex-wrap sm:w-auto">
-            {roleOptions.map((option) => <ToggleGroupItem key={option.value} value={option.value} className="min-h-10 flex-1 px-3 sm:flex-none">{option.label}</ToggleGroupItem>)}
+            {roleOptions.map((option) => <ToggleGroupItem key={option.value} value={option.value} className="min-h-11 flex-1 px-3 sm:flex-none">{option.label}</ToggleGroupItem>)}
           </ToggleGroup>
         </div>
 

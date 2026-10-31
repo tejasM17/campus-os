@@ -46,6 +46,10 @@ Create-user bodies (role decides the fields; **all are required**):
 
 - `email_id` must use the team domain issued by the organisers. Keep the
   domain in one constant (`ADMIN_TEAM_EMAIL_DOMAIN`) and validate client-side.
+- New user phone numbers must contain exactly 10 digits; reject letters,
+  punctuation, country-code prefixes, and shorter or longer values.
+- Student USNs must be 5–20 letters or digits; show `1CF24CS001` as an example
+  and store the submitted value in uppercase.
 - Office staff dept names matter: `Student Affairs` runs DocDesk, `Campus
   Maintenance` runs FixIt — suggest via datalist, don't hard-reject others.
 - Sample depts for students: CSE, ISE, ECE, MBA.

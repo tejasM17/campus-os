@@ -39,7 +39,11 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
   const createClaim = useCreateClaim(postId);
   const withdrawClaim = useWithdrawClaim(postId);
   const isStaff = profile?.role === "office_staff";
-  const resolutionQuery = useResolution(postId, enabled && isStaff);
+  const isApprovedClaimant = Boolean(profile && claimsQuery.data?.items.some(
+    (claim) => claim.decision === "approved" && claim.claimant_email.toLowerCase() === profile.email_id.toLowerCase(),
+  ));
+  const canViewResolution = isStaff || isApprovedClaimant;
+  const resolutionQuery = useResolution(postId, enabled && canViewResolution);
   const resolvePost = useResolvePost(postId);
   const updateResolution = useUpdateResolution(postId);
   const undoResolution = useUndoResolution(postId);
@@ -80,7 +84,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
   }, [withdrawClaim.isSuccess]);
 
   if (postQuery.isPending) {
-    return <main className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12" aria-label="Loading item details">
+    return <main className="mx-auto w-full max-w-[120rem] px-5 py-8 sm:px-8 lg:px-12 2xl:px-16" aria-label="Loading item details">
       <Skeleton className="h-6 w-32" />
       <div className="mt-7 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)]">
         <Skeleton className="aspect-[4/3] rounded-2xl" />
@@ -103,14 +107,14 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="mx-auto max-w-7xl px-5 pb-16 pt-7 sm:px-8 sm:pt-9 lg:px-12">
+      <section className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-7 sm:px-8 sm:pt-9 lg:px-12 2xl:px-16">
         <Link href="/findit" className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
           <ArrowLeft aria-hidden="true" className="size-4" /> Back to found items
         </Link>
 
         {banner && <div className={`mt-5 rounded-xl border px-4 py-3 text-sm font-medium ${post.resolved ? "border-sky-300 bg-sky-50 text-sky-950 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-100" : "border-border bg-muted text-foreground"}`} role="status">{banner}</div>}
 
-        <div className="mt-6 grid items-start gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:gap-12">
+        <div className="mt-6 grid items-start gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:gap-12 2xl:grid-cols-[minmax(0,1.25fr)_minmax(24rem,0.75fr)] 2xl:gap-16">
           <ItemImageGallery images={post.images} title={post.title} />
 
           <div>
@@ -129,7 +133,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
               <p>Last updated <time dateTime={post.updated_at}>{formatDateTime(post.updated_at)}</time></p>
             </div>
 
-            {isStaff && post.resolved && resolutionQuery.data && (
+            {canViewResolution && post.resolved && resolutionQuery.data && (
               <section className="mt-5 rounded-xl border border-sky-300 bg-sky-50 p-4 text-sm text-sky-950 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-100" aria-label="Resolution details">
                 <h2 className="font-semibold">Resolution details</h2>
                 <dl className="mt-3 space-y-2"><div><dt className="inline font-medium">Approved claim: </dt><dd className="inline">{resolutionQuery.data.claim_id}</dd></div><div><dt className="inline font-medium">Claimant: </dt><dd className="inline">{resolutionQuery.data.claimant_email}</dd></div>{resolutionQuery.data.note && <div><dt className="inline font-medium">Note: </dt><dd className="inline">{resolutionQuery.data.note}</dd></div>}<div><dt className="inline font-medium">Resolved by: </dt><dd className="inline">{resolutionQuery.data.resolved_by}</dd></div><div><dt className="inline font-medium">Resolved on: </dt><dd className="inline"><time dateTime={resolutionQuery.data.resolved_at}>{formatDateTime(resolutionQuery.data.resolved_at)}</time></dd></div></dl>
@@ -149,7 +153,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
           </div>
         </div>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.72fr)]">
+        <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.72fr)] 2xl:grid-cols-[minmax(0,1.3fr)_minmax(24rem,0.7fr)] 2xl:gap-16">
           {claimsQuery.isPending ? <section aria-label="Loading claims" className="rounded-2xl border border-border bg-card p-5 sm:p-7"><Skeleton className="h-7 w-32" /><div className="mt-5 space-y-4">{Array.from({ length: 2 }, (_, index) => <div key={index} className="rounded-xl border border-border p-4"><Skeleton className="h-5 w-1/2" /><Skeleton className="mt-4 h-16 w-full" /></div>)}</div></section> : <ClaimsList claims={claims} profile={profile} withdrawingClaimId={withdrawClaim.isPending ? withdrawClaim.variables ?? null : null} onWithdraw={(claimId) => withdrawClaim.mutateAsync(claimId)} resolved={post.resolved} resolutionClaimId={resolutionQuery.data?.claim_id} onResolve={isStaff ? (claimId, note) => runStaffAction(() => resolvePost.mutateAsync({ claimId, note }), "Item resolved", "Couldn’t resolve item").then(() => undefined) : undefined} onUpdateResolution={isStaff ? (claimId, note) => runStaffAction(() => updateResolution.mutateAsync({ claimId, note }), "Resolution updated", "Couldn’t update resolution").then(() => undefined) : undefined} />}
           <aside className="h-fit rounded-2xl border border-border bg-muted/50 p-5 sm:p-6">
             <h2 className="font-semibold">Item details</h2>

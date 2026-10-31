@@ -38,7 +38,8 @@ export function useAdminUser(emailId: string | null, enabled = true) {
     queryKey: ["admin", "user", emailId],
     queryFn: async () => {
       const user = await getAdminUserRequest(emailId ?? "");
-      const { otp: _otp, ...profile } = user;
+      const { otp, ...profile } = user;
+      void otp;
       return profile;
     },
     enabled: Boolean(emailId) && enabled,

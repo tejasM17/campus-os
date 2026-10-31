@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,12 @@ export default function AdminLoginPage() {
               {submitting ? "Signing in…" : "Sign in to admin"}
             </Button>
           </form>
+          <Link
+            href="/login"
+            className="mt-3 inline-flex min-h-11 items-center rounded-md text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+          >
+            Student or staff? Sign in
+          </Link>
         </CardContent>
       </Card>
     </main>

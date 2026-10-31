@@ -10,6 +10,7 @@ Keep this file short. Read the phase specs + code for detail.
 - **Phase 06 — My claims + polish** — Implemented; manual acceptance pending
 - **Phase 07 — Production verification** — Build and unauthenticated production route smoke checks complete; live backend manual acceptance pending
 - **Phase 08 — Admin user management** — Implemented; live admin backend acceptance pending
+- **Phase 09 — Responsive role surfaces** — Implemented; student/faculty/staff live-session checks pending
 - Next: Complete Phase 08 manual acceptance and finish the live release checklist
 
 ## Stack (quick)
@@ -25,6 +26,16 @@ Keep this file short. Read the phase specs + code for detail.
 ## Done / in progress
 
 - UI polish: restored the dark theme's neutral black and dark-gray palette in `app/globals.css`.
+- Mobile-first navigation and profile menus across FindIt roles and the separate admin surface; profile details reflect API fields and role capabilities.
+- Fixed Base UI dropdown profile labels by placing each `DropdownMenuLabel` inside its required `DropdownMenuGroup` in both app and admin shells.
+- Endpoint audit: added the missing FindIt `GET /api/v1/users/me` profile refresh in the app shell and enabled resolution detail reads for approved claimants as well as staff.
+- Mobile FindIt navigation now opens in the shadcn sidebar from the top bar; the fixed bottom navigation is removed.
+- Admin account creation now accepts only exactly 10 numeric digits for phone numbers.
+- Student USN fields show the accepted 5–20 alphanumeric format with an example.
+- The active found-items empty state links directly to the lost-report screen.
+- Staff photo uploads now show removable image previews before submission.
+- Desktop app screens now share a full-width canvas up to 120rem, with wider-screen grids and single-report cards spanning the available row.
+- Found items, claims, and lost-report collections now use 12-column responsive grids with matching loading layouts, so cards span the content area evenly from mobile through wide screens.
 
 | Phase | Feature | Status / key locations |
 | --- | --- | --- |
@@ -36,6 +47,7 @@ Keep this file short. Read the phase specs + code for detail.
 | 06 | My claims + polish | Implemented; manual acceptance pending — `app/(app)/claims/*`, `src/viewmodels/use-claims.ts`, shared dialogs and mutation feedback |
 | 07 | Production verification | Build and production route smoke checks complete; live backend acceptance pending — `docs/release-checklist.md`, `src/lib/api/client.ts` |
 | 08 | Admin user management | Implemented; live admin backend acceptance pending — `app/admin-login/page.tsx`, `app/admin/*`, `src/features/admin/*`, `src/store/admin-session.ts`, `src/viewmodels/use-admin-users.ts` |
+| 09 | Responsive role surfaces | Implemented; student/faculty/staff live-session checks pending — `docs/specs/phase-09-responsive-audit.md`, shared dialog, admin cards, responsive hooks |
 
 ## Architecture invariants
 
