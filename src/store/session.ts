@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { adminLoginRequest, loginRequest } from "@/src/lib/api/endpoints";
+import { loginRequest } from "@/src/lib/api/endpoints";
 import type { Profile } from "@/src/lib/api/types";
 
 interface SessionState {
@@ -10,7 +10,7 @@ interface SessionState {
   profile: Profile | null;
   expiresAt: number | null;
   hydrated: boolean;
-  login: (email: string, otp: string, isAdmin: boolean) => Promise<void>;
+  login: (email: string, otp: string) => Promise<void>;
   logout: () => void;
   setHydrated: () => void;
 }
@@ -22,10 +22,8 @@ export const useSessionStore = create<SessionState>()(
       profile: null,
       expiresAt: null,
       hydrated: false,
-      login: async (email, otp, isAdmin) => {
-        const result = isAdmin
-          ? await adminLoginRequest(email, otp)
-          : await loginRequest(email, otp);
+      login: async (email, otp) => {
+        const result = await loginRequest(email, otp);
         set({
           token: result.access_token,
           profile: result.profile,

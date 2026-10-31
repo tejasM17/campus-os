@@ -32,7 +32,7 @@ Roles come from `profile.role` after login; office staff also carry `dept`.
 |---|---|
 | office_staff | post/edit/archive/delete found posts, see ALL claims, resolve posts, see everyone's lost requests |
 | student / faculty | browse, claim, withdraw own pending claim, see own lost requests, report lost items |
-| admin | browse and claim only |
+| admin | use the separate Phase 08 user-management panel; the admin session is not used by FindIt |
 
 The API enforces all of this; the UI mirrors it by hiding actions the role
 can't use. Hidden, not disabled — a disabled button for a forbidden action is
@@ -51,11 +51,14 @@ clutter.
 - Lost requests: report, list (role-scoped), edit, mark as found (archived),
   reactivate, delete.
 - Error handling driven by `error.code` with one shared handler.
+- Phase 08 admin user management on its own `/admin-login` and `/admin/*` surface, with separate session storage and the documented admin account endpoints.
 
 ## Out of scope, and why
 
-- **Other tracks (Notice Hub, DocDesk, FixIt), admin user management.** This
-  build is Track 01 only. The architecture leaves room; the screens don't exist.
+- **Other tracks (Notice Hub, DocDesk, FixIt).** This build includes Track 01
+  plus the separate Phase 08 onboarding panel; the other tracks remain out of scope.
+- **Using an admin session in FindIt.** The admin panel and FindIt have separate
+  storage keys and guards. Admins do not enter FindIt with their admin token.
 - **Mocking or a local backend.** The API is live and shared. Tests use MSW to
   intercept at the fetch layer, never a fake data module the UI imports.
 - **Notifications, chat, real-time.** The API has no such endpoints.

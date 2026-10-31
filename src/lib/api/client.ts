@@ -1,4 +1,5 @@
 import { useSessionStore } from "@/src/store/session";
+import { useAdminSessionStore } from "@/src/store/admin-session";
 import { ApiError } from "./errors";
 
 export type ApiMethod = "GET" | "POST" | "PATCH" | "DELETE";
@@ -7,10 +8,11 @@ export interface ApiCallOptions {
   body?: unknown;
   formData?: FormData;
   headers?: HeadersInit;
+  authScope?: "user" | "admin";
 }
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
   "https://campus-os-backend-8sjf.onrender.com";
 
 export async function apiCall<T>(
@@ -20,7 +22,10 @@ export async function apiCall<T>(
 ): Promise<T> {
   const isLogin =
     path === "/api/v1/auth/login" || path === "/api/v1/auth/admin/login";
-  const token = useSessionStore.getState().token;
+  const authScope = opts.authScope ?? "user";
+  const token = authScope === "admin"
+    ? useAdminSessionStore.getState().token
+    : useSessionStore.getState().token;
   const headers = new Headers(opts.headers);
 
   if (!isLogin && token) headers.set("Authorization", `Bearer ${token}`);
@@ -56,8 +61,16 @@ export async function apiCall<T>(
       response.status === 401 &&
       (apiError.code === "TOKEN_EXPIRED" || apiError.code === "UNAUTHORIZED")
     ) {
-      useSessionStore.getState().logout();
-      if (typeof window !== "undefined") window.location.assign("/login");
+      if (authScope === "admin") {
+        useAdminSessionStore.getState().logout();
+      } else {
+        useSessionStore.getState().logout();
+      }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("campus-os:session-expired", {
+          detail: { scope: authScope },
+        }));
+      }
     }
     throw apiError;
   }

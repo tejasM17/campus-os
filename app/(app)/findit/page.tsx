@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ import type { FoundPostStatus } from "@/src/lib/api/endpoints";
 import { EmptyState } from "@/src/components/findit/empty-state";
 import { PostCard } from "@/src/components/findit/post-card";
 import { PostCardSkeleton } from "@/src/components/findit/post-card-skeleton";
+import { PostFormDialog } from "@/src/components/findit/post-form-dialog";
+import { useCreatePost } from "@/src/viewmodels/use-staff-workflows";
 
 const filters: { label: string; value: FoundPostStatus }[] = [
   { label: "Active", value: "active" },
@@ -25,9 +28,12 @@ export default function FindItFeedPage() {
   const expiresAt = useSessionStore((state) => state.expiresAt);
   const logout = useSessionStore((state) => state.logout);
   const [status, setStatus] = useState<FoundPostStatus>("active");
+  const [postDialogOpen, setPostDialogOpen] = useState(false);
+  const createPost = useCreatePost();
   const postsQuery = useFoundPosts(status, hasValidSession({ token, expiresAt }));
   const posts = useMemo(
-    () => postsQuery.data?.pages.flatMap((page) => page.items) ?? [],
+    () => (postsQuery.data?.pages.flatMap((page) => page.items) ?? [])
+      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at)),
     [postsQuery.data],
   );
 
@@ -48,9 +54,10 @@ export default function FindItFeedPage() {
     <main className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
-          <a href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+          <Link href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
             CampusOS <span className="text-primary">/ FindIt</span>
-          </a>
+          </Link>
+          <nav aria-label="FindIt" className="hidden items-center gap-1 text-sm md:flex"><Link href="/findit/lost-requests" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">Lost reports</Link><Link href="/claims" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">My claims</Link></nav>
           <div className="flex items-center gap-2 sm:gap-4">
             <ThemeToggle />
             {profile && <span className="hidden text-sm text-muted-foreground sm:inline">{profile.name}</span>}
@@ -78,7 +85,7 @@ export default function FindItFeedPage() {
             </p>
           </div>
           {isStaff && (
-            <Button type="button" className="min-h-11 w-full gap-2 px-4 sm:w-auto" onClick={() => undefined}>
+            <Button type="button" className="min-h-11 w-full gap-2 px-4 sm:w-auto" onClick={() => setPostDialogOpen(true)}>
               <Plus aria-hidden="true" className="size-4" /> Post found item
             </Button>
           )}
@@ -143,6 +150,10 @@ export default function FindItFeedPage() {
           </>
         )}
       </section>
+      {isStaff && <PostFormDialog key={String(postDialogOpen)} open={postDialogOpen} onOpenChange={setPostDialogOpen} submitting={createPost.isPending} onSubmit={async (input) => {
+        try { await createPost.mutateAsync(input); toast.add({ title: "Found item posted", description: "It is now at the top of the gallery." }); }
+        catch (error) { toast.add({ title: "Couldn’t post item", description: error instanceof Error ? error.message : "Please try again.", priority: "high" }); throw error; }
+      }} />}
     </main>
   );
 }

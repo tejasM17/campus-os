@@ -16,7 +16,6 @@ export default function LoginPage() {
   const login = useSessionStore((state) => state.login);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [isAdminLogin, setIsAdminLogin] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -25,7 +24,7 @@ export default function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      await login(email.trim(), otp.trim(), isAdminLogin);
+      await login(email.trim(), otp.trim());
       router.replace("/findit");
     } catch (cause) {
       setError(
@@ -48,12 +47,10 @@ export default function LoginPage() {
           CampusOS <span className="text-muted-foreground">/ FindIt</span>
         </Link>
         <h1 className="mt-8 text-3xl font-semibold tracking-tight">
-          {isAdminLogin ? "Admin sign in" : "Welcome back"}
+          Welcome back
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          {isAdminLogin
-            ? "Use your administrator email and one-time password."
-            : "Sign in with your campus email and one-time password."}
+          Sign in with your campus email and one-time password.
         </p>
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
@@ -87,22 +84,15 @@ export default function LoginPage() {
             disabled={submitting}
             className="h-11 w-full px-4 text-sm font-semibold disabled:cursor-wait"
           >
-            {submitting ? "Signing in…" : isAdminLogin ? "Sign in as admin" : "Sign in"}
+            {submitting ? "Signing in…" : "Sign in"}
           </Button>
         </form>
-        <Button
-          type="button"
-          onClick={() => {
-            setIsAdminLogin((current) => !current);
-            setError(null);
-          }}
-          variant="link"
-          className="mt-3 min-h-11 px-0 text-sm font-medium"
+        <Link
+          href="/admin-login"
+          className="mt-3 inline-flex min-h-11 items-center rounded-md text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
         >
-          {isAdminLogin
-            ? "Sign in as student, faculty, or staff"
-            : "Admin account? Sign in as admin"}
-        </Button>
+          Administrator? Sign in
+        </Link>
       </Card>
     </main>
   );

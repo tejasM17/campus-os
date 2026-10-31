@@ -8,8 +8,9 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const token = useSessionStore((state) => state.token);
   const expiresAt = useSessionStore((state) => state.expiresAt);
+  const profile = useSessionStore((state) => state.profile);
   const hydrated = useSessionStore((state) => state.hydrated);
-  const valid = hasValidSession({ token, expiresAt });
+  const valid = hasValidSession({ token, expiresAt }) && profile?.role !== "admin";
 
   useEffect(() => {
     if (hydrated && !valid) router.replace("/login");

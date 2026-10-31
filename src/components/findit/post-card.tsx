@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CalendarDays, MapPin, PackageSearch } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import type { FoundPost } from "@/src/lib/api/types";
 import { StatusBadge } from "./status-badge";
 
@@ -33,10 +34,10 @@ export function PostCard({ post }: { post: FoundPost }) {
       <div className="p-4">
         <h2 className="truncate text-base font-semibold tracking-tight text-foreground">{post.title}</h2>
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
-          <span className="inline-flex min-w-0 items-center gap-1.5">
-            <MapPin aria-hidden="true" className="size-4 shrink-0" />
+          <Badge variant="outline" className="inline-flex max-w-full min-w-0 items-center gap-1.5 font-normal">
+            <MapPin aria-hidden="true" className="size-3.5 shrink-0" />
             <span className="truncate">{post.location_found}</span>
-          </span>
+          </Badge>
           <span className="inline-flex items-center gap-1.5">
             <CalendarDays aria-hidden="true" className="size-4 shrink-0" />
             <time dateTime={post.found_on}>{post.found_on}</time>
