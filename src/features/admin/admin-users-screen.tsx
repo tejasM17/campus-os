@@ -142,6 +142,11 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
     setErrors({});
     setRequestError(null);
     const normalizedEmail = (values.email_id ?? "").trim().toLowerCase();
+    const phoneNumber = (values.phone_number ?? "").trim();
+    if (!/^\d{10}$/.test(phoneNumber)) {
+      setErrors({ phone_number: "Enter exactly 10 digits." });
+      return;
+    }
     if (!adminDomain) {
       setRequestError("Could not determine the team email domain from the admin profile.");
       return;
@@ -154,7 +159,7 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
       role,
       name: (values.name ?? "").trim(),
       email_id: normalizedEmail,
-      phone_number: (values.phone_number ?? "").trim(),
+      phone_number: phoneNumber,
     };
     const input: CreateAdminUserInput = role === "student"
       ? { ...common, role, usn: (values.usn ?? "").trim().toUpperCase(), dept: (values.dept ?? "").trim() }
@@ -194,7 +199,7 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
           <FieldGroup className="grid gap-4 sm:grid-cols-2">
             <FieldInput id="name" label="Full name" required minLength={2} maxLength={100} value={values.name ?? ""} onChange={(value) => set("name", value)} error={errors.name} />
             <FieldInput id="email_id" label="Campus email" type="email" required value={values.email_id ?? ""} onChange={(value) => set("email_id", value)} hint={adminDomain ? `Must end with @${adminDomain}` : "Team domain is read from the administrator profile."} error={errors.email_id} />
-            <FieldInput id="phone_number" label="Phone number" type="tel" required pattern="\+?[0-9]{10,15}" maxLength={16} value={values.phone_number ?? ""} onChange={(value) => set("phone_number", value)} hint="10–15 digits; an initial + is allowed." error={errors.phone_number} />
+            <FieldInput id="phone_number" label="Phone number" type="tel" required pattern="[0-9]{10}" maxLength={10} value={values.phone_number ?? ""} onChange={(value) => { set("phone_number", value.replace(/\D/g, "").slice(0, 10)); setErrors((current) => ({ ...current, phone_number: "" })); }} hint="Enter exactly 10 digits." error={errors.phone_number} />
             {role === "student" && <>
               <FieldInput id="usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" value={values.usn ?? ""} onChange={(value) => set("usn", value)} error={errors.usn} />
               <FieldInput id="dept" label="Department" required minLength={2} maxLength={60} list="student-departments" value={values.dept ?? ""} onChange={(value) => set("dept", value)} error={errors.dept} />

@@ -39,7 +39,11 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
   const createClaim = useCreateClaim(postId);
   const withdrawClaim = useWithdrawClaim(postId);
   const isStaff = profile?.role === "office_staff";
-  const resolutionQuery = useResolution(postId, enabled && isStaff);
+  const isApprovedClaimant = Boolean(profile && claimsQuery.data?.items.some(
+    (claim) => claim.decision === "approved" && claim.claimant_email.toLowerCase() === profile.email_id.toLowerCase(),
+  ));
+  const canViewResolution = isStaff || isApprovedClaimant;
+  const resolutionQuery = useResolution(postId, enabled && canViewResolution);
   const resolvePost = useResolvePost(postId);
   const updateResolution = useUpdateResolution(postId);
   const undoResolution = useUndoResolution(postId);
@@ -129,7 +133,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
               <p>Last updated <time dateTime={post.updated_at}>{formatDateTime(post.updated_at)}</time></p>
             </div>
 
-            {isStaff && post.resolved && resolutionQuery.data && (
+            {canViewResolution && post.resolved && resolutionQuery.data && (
               <section className="mt-5 rounded-xl border border-sky-300 bg-sky-50 p-4 text-sm text-sky-950 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-100" aria-label="Resolution details">
                 <h2 className="font-semibold">Resolution details</h2>
                 <dl className="mt-3 space-y-2"><div><dt className="inline font-medium">Approved claim: </dt><dd className="inline">{resolutionQuery.data.claim_id}</dd></div><div><dt className="inline font-medium">Claimant: </dt><dd className="inline">{resolutionQuery.data.claimant_email}</dd></div>{resolutionQuery.data.note && <div><dt className="inline font-medium">Note: </dt><dd className="inline">{resolutionQuery.data.note}</dd></div>}<div><dt className="inline font-medium">Resolved by: </dt><dd className="inline">{resolutionQuery.data.resolved_by}</dd></div><div><dt className="inline font-medium">Resolved on: </dt><dd className="inline"><time dateTime={resolutionQuery.data.resolved_at}>{formatDateTime(resolutionQuery.data.resolved_at)}</time></dd></div></dl>

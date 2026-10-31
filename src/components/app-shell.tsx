@@ -6,8 +6,10 @@ import { LogOut, Search, ClipboardList, ClipboardCheck, UserRound, ChevronDown }
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { ThemeToggle } from "@/src/components/providers/theme-provider";
 import { useSessionStore } from "@/src/store/session";
+import { useProfileRefresh } from "@/src/viewmodels/use-profile";
 import type { ReactNode } from "react";
 
 const links = [
@@ -21,18 +23,56 @@ function roleName(role: string) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  return <SidebarProvider defaultOpen={false}>
+    <AppShellContent>{children}</AppShellContent>
+  </SidebarProvider>;
+}
+
+function AppShellContent({ children }: { children: ReactNode }) {
+  useProfileRefresh();
   const pathname = usePathname();
   const router = useRouter();
+  const { setOpenMobile } = useSidebar();
   const profile = useSessionStore((state) => state.profile);
   const logout = useSessionStore((state) => state.logout);
   return (
     <div className="min-h-screen bg-background">
+      <Sidebar side="left" collapsible="offcanvas" className="md:hidden">
+        <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
+          <Link href="/findit" onClick={() => setOpenMobile(false)} className="flex min-h-11 items-center gap-2.5 rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
+            <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground"><Search aria-hidden="true" className="size-4" /></span>
+            <span>CampusOS <span className="text-muted-foreground">/ FindIt</span></span>
+          </Link>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>FindIt</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {links.map(({ href, label, icon: Icon }) => {
+                  const active = href === "/findit" ? pathname === href || pathname.startsWith("/findit/") : pathname === href;
+                  return <SidebarMenuItem key={href}>
+                    <SidebarMenuButton render={<Link href={href} aria-current={active ? "page" : undefined} onClick={() => setOpenMobile(false)} />} isActive={active} size="lg" className="min-h-11">
+                      <Icon aria-hidden="true" /><span>{label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>;
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        {profile && <SidebarFooter className="border-t border-sidebar-border p-4">
+          <p className="truncate text-sm font-medium">{profile.name}</p>
+          <p className="truncate text-xs text-muted-foreground">{profile.email_id}</p>
+        </SidebarFooter>}
+      </Sidebar>
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
           <Link href="/findit" className="flex min-h-11 items-center gap-2.5 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
             <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground"><Search aria-hidden="true" className="size-4" /></span>
             <span className="font-semibold tracking-tight">CampusOS <span className="text-muted-foreground">/ FindIt</span></span>
           </Link>
+          <SidebarTrigger aria-label="Open navigation" className="min-h-11 min-w-11 md:hidden" />
           <nav aria-label="FindIt" className="hidden items-center gap-1 md:flex">
             {links.map(({ href, label }) => {
               const active = href === "/findit" ? pathname === href || pathname.startsWith("/findit/") : pathname === href;
@@ -62,13 +102,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <div className="pb-20 md:pb-0">{children}</div>
-      <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-border/80 bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 backdrop-blur-xl md:hidden">
-        {links.map(({ href, label, icon: Icon }) => {
-          const active = href === "/findit" ? pathname === href || pathname.startsWith("/findit/") : pathname === href;
-          return <Link key={href} href={href} aria-current={active ? "page" : undefined} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-lg text-xs font-medium ${active ? "text-primary" : "text-muted-foreground"}`}><Icon aria-hidden="true" className="size-5" />{label}</Link>;
-        })}
-      </nav>
+      <div>{children}</div>
     </div>
   );
 }

@@ -175,6 +175,10 @@ export function loginRequest(email_id: string, otp: string) {
   });
 }
 
+export function meRequest() {
+  return apiCall<Profile>("GET", "/api/v1/users/me");
+}
+
 export function adminLoginRequest(email_id: string, otp: string) {
   return apiCall<AdminLoginResponse>("POST", "/api/v1/auth/admin/login", {
     body: { email_id, otp },

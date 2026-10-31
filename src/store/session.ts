@@ -11,6 +11,7 @@ interface SessionState {
   expiresAt: number | null;
   hydrated: boolean;
   login: (email: string, otp: string) => Promise<void>;
+  setProfile: (profile: Profile) => void;
   logout: () => void;
   setHydrated: () => void;
 }
@@ -30,6 +31,7 @@ export const useSessionStore = create<SessionState>()(
           expiresAt: Date.now() + result.expires_in * 1000,
         });
       },
+      setProfile: (profile) => set({ profile }),
       logout: () => set({ token: null, profile: null, expiresAt: null }),
       setHydrated: () => set({ hydrated: true }),
     }),

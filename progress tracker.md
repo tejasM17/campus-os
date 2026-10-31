@@ -28,6 +28,9 @@ Keep this file short. Read the phase specs + code for detail.
 - UI polish: restored the dark theme's neutral black and dark-gray palette in `app/globals.css`.
 - Mobile-first navigation and profile menus across FindIt roles and the separate admin surface; profile details reflect API fields and role capabilities.
 - Fixed Base UI dropdown profile labels by placing each `DropdownMenuLabel` inside its required `DropdownMenuGroup` in both app and admin shells.
+- Endpoint audit: added the missing FindIt `GET /api/v1/users/me` profile refresh in the app shell and enabled resolution detail reads for approved claimants as well as staff.
+- Mobile FindIt navigation now opens in the shadcn sidebar from the top bar; the fixed bottom navigation is removed.
+- Admin account creation now accepts only exactly 10 numeric digits for phone numbers.
 
 | Phase | Feature | Status / key locations |
 | --- | --- | --- |
