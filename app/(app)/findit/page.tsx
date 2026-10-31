@@ -48,7 +48,7 @@ export default function FindItFeedPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12 2xl:px-16">
+      <section className="mx-auto w-full max-w-none px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12 2xl:px-16">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="inline-flex items-center gap-2 text-sm font-semibold text-primary">

@@ -36,6 +36,7 @@ Keep this file short. Read the phase specs + code for detail.
 - Staff photo uploads now show removable image previews before submission.
 - Desktop app screens now share a full-width canvas up to 120rem, with wider-screen grids and single-report cards spanning the available row.
 - Found items, claims, and lost-report collections now use 12-column responsive grids with matching loading layouts, so cards span the content area evenly from mobile through wide screens.
+- FindIt and admin route shells now let their content use the full fluid viewport width; a single claim card spans the full row like a single lost report.
 
 | Phase | Feature | Status / key locations |
 | --- | --- | --- |

@@ -84,7 +84,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
   }, [withdrawClaim.isSuccess]);
 
   if (postQuery.isPending) {
-    return <main className="mx-auto w-full max-w-[120rem] px-5 py-8 sm:px-8 lg:px-12 2xl:px-16" aria-label="Loading item details">
+    return <main className="mx-auto w-full max-w-none px-5 py-8 sm:px-8 lg:px-12 2xl:px-16" aria-label="Loading item details">
       <Skeleton className="h-6 w-32" />
       <div className="mt-7 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)]">
         <Skeleton className="aspect-[4/3] rounded-2xl" />
@@ -107,7 +107,7 @@ export default function ItemDetailPage({ params }: { params: Promise<{ postId: s
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-7 sm:px-8 sm:pt-9 lg:px-12 2xl:px-16">
+      <section className="mx-auto w-full max-w-none px-5 pb-16 pt-7 sm:px-8 sm:pt-9 lg:px-12 2xl:px-16">
         <Link href="/findit" className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
           <ArrowLeft aria-hidden="true" className="size-4" /> Back to found items
         </Link>
