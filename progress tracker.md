@@ -10,6 +10,7 @@ Keep this file short. Read the phase specs + code for detail.
 - **Phase 06 — My claims + polish** — Implemented; manual acceptance pending
 - **Phase 07 — Production verification** — Build and unauthenticated production route smoke checks complete; live backend manual acceptance pending
 - **Phase 08 — Admin user management** — Implemented; live admin backend acceptance pending
+- **Phase 09 — Responsive role surfaces** — Implemented; student/faculty/staff live-session checks pending
 - Next: Complete Phase 08 manual acceptance and finish the live release checklist
 
 ## Stack (quick)
@@ -25,6 +26,8 @@ Keep this file short. Read the phase specs + code for detail.
 ## Done / in progress
 
 - UI polish: restored the dark theme's neutral black and dark-gray palette in `app/globals.css`.
+- Mobile-first navigation and profile menus across FindIt roles and the separate admin surface; profile details reflect API fields and role capabilities.
+- Fixed Base UI dropdown profile labels by placing each `DropdownMenuLabel` inside its required `DropdownMenuGroup` in both app and admin shells.
 
 | Phase | Feature | Status / key locations |
 | --- | --- | --- |
@@ -36,6 +39,7 @@ Keep this file short. Read the phase specs + code for detail.
 | 06 | My claims + polish | Implemented; manual acceptance pending — `app/(app)/claims/*`, `src/viewmodels/use-claims.ts`, shared dialogs and mutation feedback |
 | 07 | Production verification | Build and production route smoke checks complete; live backend acceptance pending — `docs/release-checklist.md`, `src/lib/api/client.ts` |
 | 08 | Admin user management | Implemented; live admin backend acceptance pending — `app/admin-login/page.tsx`, `app/admin/*`, `src/features/admin/*`, `src/store/admin-session.ts`, `src/viewmodels/use-admin-users.ts` |
+| 09 | Responsive role surfaces | Implemented; student/faculty/staff live-session checks pending — `docs/specs/phase-09-responsive-audit.md`, shared dialog, admin cards, responsive hooks |
 
 ## Architecture invariants
 

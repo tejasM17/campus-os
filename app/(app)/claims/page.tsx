@@ -10,8 +10,6 @@ import { ClaimStatusBadge } from "@/src/components/findit/claim-status-badge";
 import { ApiError } from "@/src/lib/api/errors";
 import { getPostRequest } from "@/src/lib/api/endpoints";
 import { useSessionStore, hasValidSession } from "@/src/store/session";
-import { ThemeToggle } from "@/src/components/providers/theme-provider";
-import { useRouter } from "next/navigation";
 import { useMyClaims, useWithdrawClaim } from "@/src/viewmodels/use-claims";
 import { useQueries } from "@tanstack/react-query";
 
@@ -20,10 +18,8 @@ function formatDate(value: string) {
 }
 
 export default function MyClaimsPage() {
-  const router = useRouter();
   const token = useSessionStore((state) => state.token);
   const expiresAt = useSessionStore((state) => state.expiresAt);
-  const logout = useSessionStore((state) => state.logout);
   const enabled = hasValidSession({ token, expiresAt });
   const claimsQuery = useMyClaims(enabled);
   const claims = useMemo(() => claimsQuery.data?.pages.flatMap((page) => page.items) ?? [], [claimsQuery.data]);
@@ -50,10 +46,6 @@ export default function MyClaimsPage() {
   }
 
   return <main className="min-h-screen bg-background">
-    <header className="border-b border-border bg-card"><div className="mx-auto flex min-h-16 max-w-5xl items-center justify-between gap-4 px-5 sm:px-8">
-      <Link href="/findit" className="rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">CampusOS <span className="text-primary">/ FindIt</span></Link>
-      <div className="flex items-center gap-2"><nav aria-label="FindIt" className="hidden items-center gap-1 text-sm sm:flex"><Link href="/findit" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">Found items</Link><Link href="/findit/lost-requests" className="rounded-md px-3 py-2 text-muted-foreground hover:text-foreground">Lost reports</Link><span aria-current="page" className="rounded-md bg-muted px-3 py-2 font-medium">My claims</span></nav><ThemeToggle/><Button type="button" variant="ghost" className="min-h-11 px-3" onClick={() => { logout(); router.replace("/login"); }}>Sign out</Button></div>
-    </div></header>
     <section className="mx-auto max-w-5xl px-5 pb-16 pt-9 sm:px-8 sm:pt-12">
       <p className="text-sm font-semibold text-primary">FindIt · Your activity</p>
       <h1 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">My claims</h1>

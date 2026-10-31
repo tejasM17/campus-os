@@ -1,26 +1,36 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 const THEME_STORAGE_KEY = "campus-os-theme";
+const THEME_CHANGE_EVENT = "campus-os-theme-change";
 const ThemeContext = createContext<{ isDark: boolean; setIsDark: (value: boolean) => void } | null>(null);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [isDark, setIsDark] = useState(true);
+function subscribeToTheme(onStoreChange: () => void) {
+  window.addEventListener(THEME_CHANGE_EVENT, onStoreChange);
+  return () => window.removeEventListener(THEME_CHANGE_EVENT, onStoreChange);
+}
 
+function getThemeSnapshot() {
+  return window.localStorage.getItem(THEME_STORAGE_KEY) !== "light";
+}
+
+function getServerThemeSnapshot() {
+  return true;
+}
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const isDark = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, getServerThemeSnapshot);
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-    const nextIsDark = savedTheme === null || savedTheme === "dark";
-    setIsDark(nextIsDark);
-    document.documentElement.classList.toggle("dark", nextIsDark);
-  }, []);
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
 
   function updateTheme(nextIsDark: boolean) {
-    setIsDark(nextIsDark);
     document.documentElement.classList.toggle("dark", nextIsDark);
     window.localStorage.setItem(THEME_STORAGE_KEY, nextIsDark ? "dark" : "light");
+    window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
   }
 
   return (

@@ -307,8 +307,8 @@ function UserOtp({ user, revealed, onToggle }: { user: AdminUser; revealed: bool
   }
   return <div className="flex flex-wrap items-center gap-2">
     <code aria-label={revealed && user.otp ? `OTP ${user.otp}` : "OTP hidden"} className="min-w-16 rounded bg-muted px-2 py-1 text-xs font-semibold tracking-wider">{revealed ? user.otp ?? "Unavailable" : "••••••"}</code>
-    <Button type="button" variant="ghost" size="icon" className="size-10" aria-label={`${revealed ? "Hide" : "Reveal"} OTP for ${user.email_id}`} onClick={onToggle}>{revealed ? <EyeOff aria-hidden="true"/> : <Eye aria-hidden="true"/>}</Button>
-    {revealed && user.otp && <Button type="button" variant="outline" size="sm" className="min-h-10" onClick={() => void copyOtp()}><Copy aria-hidden="true" data-icon="inline-start"/>{copied ? "Copied" : "Copy"}</Button>}
+    <Button type="button" variant="ghost" size="icon" className="size-11" aria-label={`${revealed ? "Hide" : "Reveal"} OTP for ${user.email_id}`} onClick={onToggle}>{revealed ? <EyeOff aria-hidden="true"/> : <Eye aria-hidden="true"/>}</Button>
+    {revealed && user.otp && <Button type="button" variant="outline" size="sm" className="min-h-11" onClick={() => void copyOtp()}><Copy aria-hidden="true" data-icon="inline-start"/>{copied ? "Copied" : "Copy"}</Button>}
     {copyError && <span role="alert" className="text-xs text-destructive">Clipboard unavailable</span>}
   </div>;
 }
@@ -316,7 +316,7 @@ function UserOtp({ user, revealed, onToggle }: { user: AdminUser; revealed: bool
 function UserActions({ user, onEdit, onRegenerate, onDelete }: { user: AdminUser; onEdit: () => void; onRegenerate: () => void; onDelete: () => void }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="size-10" aria-label={`Actions for ${user.name}`} />}><MoreHorizontal aria-hidden="true"/></DropdownMenuTrigger>
+      <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="size-11" aria-label={`Actions for ${user.name}`} />}><MoreHorizontal aria-hidden="true"/></DropdownMenuTrigger>
       <DropdownMenuContent align="end"><DropdownMenuGroup>
         <DropdownMenuItem onClick={onEdit}><UserRoundPen aria-hidden="true"/>Edit profile</DropdownMenuItem>
         <DropdownMenuItem onClick={onRegenerate}><RotateCw aria-hidden="true"/>Regenerate OTP</DropdownMenuItem>
@@ -406,7 +406,7 @@ export function AdminUsersScreen() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold">Accounts <span className="text-sm font-normal text-muted-foreground">{pages?.[0]?.count ?? ""}</span></h2>
           <ToggleGroup value={[role ?? "all"]} onValueChange={(values) => { const selected = values.at(-1); setRole(selected === "student" || selected === "faculty" || selected === "office_staff" ? selected : undefined); }} aria-label="Filter users by role" variant="outline" spacing={1} className="w-full flex-wrap sm:w-auto">
-            {roleOptions.map((option) => <ToggleGroupItem key={option.value} value={option.value} className="min-h-10 flex-1 px-3 sm:flex-none">{option.label}</ToggleGroupItem>)}
+            {roleOptions.map((option) => <ToggleGroupItem key={option.value} value={option.value} className="min-h-11 flex-1 px-3 sm:flex-none">{option.label}</ToggleGroupItem>)}
           </ToggleGroup>
         </div>
 
