@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SessionHydration } from "@/src/components/auth/session-hydration";
+import { AdminSessionHydration } from "@/src/components/auth/admin-session-hydration";
+import { SessionExpiryRedirect } from "@/src/components/auth/session-expiry-redirect";
 import { QueryProvider } from "@/src/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toast";
 import { ThemeProvider } from "@/src/components/providers/theme-provider";
@@ -25,8 +27,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <SessionHydration />
+        <AdminSessionHydration />
         <ThemeProvider>
           <QueryProvider>
+            <SessionExpiryRedirect />
             <Toaster>{children}</Toaster>
           </QueryProvider>
         </ThemeProvider>

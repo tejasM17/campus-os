@@ -11,6 +11,32 @@ export interface Profile {
   usn?: string;
 }
 
+export interface AdminProfile {
+  role: "admin";
+  team_id: string;
+  institution_name: string;
+  name: string;
+  email_id: string;
+  phone_number?: string;
+}
+
+export type ManagedRole = Exclude<Role, "admin">;
+
+export interface AdminUser {
+  role: ManagedRole;
+  team_id: string;
+  name: string;
+  email_id: string;
+  phone_number?: string;
+  dept?: string;
+  designation?: string;
+  usn?: string;
+  created_at?: string;
+  updated_at?: string;
+  otp?: string;
+  created_by?: string;
+}
+
 export interface FoundPost {
   post_id: string;
   title: string;

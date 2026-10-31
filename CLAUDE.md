@@ -20,10 +20,12 @@ package rather than going from memory.
 
 - Base URL: `https://campus-os-backend-8sjf.onrender.com`
 - All calls except login carry `Authorization: Bearer <token>`.
-- The token lives 12 hours (`expires_in: 43200`). On 401 TOKEN_EXPIRED, send the
-  user back to login automatically.
+- Tokens live 12 hours (`expires_in: 43200`). On 401 TOKEN_EXPIRED, clear only
+  the matching session and return to `/login` or `/admin-login` automatically.
 - Base paths used in this project: `/api/v1/auth/*`, `/api/v1/users/me`,
-  `/api/v1/findit/*`. Nothing else gets called.
+  `/api/v1/findit/*`, and Phase 08 `/api/v1/admin/*`. Nothing else gets called.
+- Admin login and requests use a separate session store and auth scope; never
+  pass an admin token to FindIt.
 - Interactive API explorer lives at `{baseUrl}/docs` — verify any doubt there
   before coding around it.
 
@@ -56,13 +58,14 @@ say so before you build.
   goes through one typed client: inject token, parse `{error:{code,message}}`,
   map HTTP codes. Nothing else in the app calls `fetch` directly.
 - `src/lib/api/types.ts` — TypeScript types transcribed 1:1 from the cookbook
-  JSON (FoundPost, Claim, LostRequest, Profile, Paged<T>, ApiError).
-- `src/viewmodels/` — per-screen hooks (useFoundPosts, useClaims, ...). All
+  JSON (FoundPost, Claim, LostRequest, Profile, AdminProfile, AdminUser, Paged<T>, ApiError).
+- `src/viewmodels/` — per-screen hooks (useFoundPosts, useClaims, useAdminUsers, ...). All
   TanStack Query + Zustand lives here. Components never import the api client.
 - `src/components/` — presentational only. Props in, events out. No fetch, no
   stores, no router calls.
-- `src/app/` — routes and layout only: login, (app)/findit, (app)/lost-requests.
-- Route guards read the auth store; the API still enforces auth, guards are UX
+- `src/app/` — routes and layout only: login, (app)/findit, (app)/lost-requests,
+  admin-login, admin.
+- Route guards read the matching session store; the API still enforces auth, guards are UX
   not security.
 
 ## Conventions

@@ -9,7 +9,8 @@ Keep this file short. Read the phase specs + code for detail.
 - **Phase 05 — Lost requests** — Implemented; manual acceptance pending
 - **Phase 06 — My claims + polish** — Implemented; manual acceptance pending
 - **Phase 07 — Production verification** — Build and unauthenticated production route smoke checks complete; live backend manual acceptance pending
-- Next: Complete live release checklist
+- **Phase 08 — Admin user management** — Implemented; live admin backend acceptance pending
+- Next: Complete Phase 08 manual acceptance and finish the live release checklist
 
 ## Stack (quick)
 
@@ -34,11 +35,12 @@ Keep this file short. Read the phase specs + code for detail.
 | 05 | Lost requests | Implemented; manual acceptance pending — `app/(app)/findit/lost-requests/page.tsx`, `src/components/lost/*`, `src/viewmodels/use-lost-requests.ts`, `src/lib/api/endpoints.ts` |
 | 06 | My claims + polish | Implemented; manual acceptance pending — `app/(app)/claims/*`, `src/viewmodels/use-claims.ts`, shared dialogs and mutation feedback |
 | 07 | Production verification | Build and production route smoke checks complete; live backend acceptance pending — `docs/release-checklist.md`, `src/lib/api/client.ts` |
+| 08 | Admin user management | Implemented; live admin backend acceptance pending — `app/admin-login/page.tsx`, `app/admin/*`, `src/features/admin/*`, `src/store/admin-session.ts`, `src/viewmodels/use-admin-users.ts` |
 
 ## Architecture invariants
 
 - Follow `docs/project-doc.md`, `docs/architecture.md`, and the active `docs/specs/phase-NN-*.md` before implementation.
-- The live backend is the source of truth. Call only documented `/api/v1/auth/*`, `/api/v1/users/me`, and `/api/v1/findit/*` endpoints through `src/lib/api/client.ts`.
+- The live backend is the source of truth. Call only documented endpoints through `src/lib/api/client.ts`; admin calls use the separate admin session scope.
 - Keep API types faithful to `docs/architecture.md`; do not invent fields or mock app data.
 - Keep server data out of local state; mutations invalidate query data when query support is added.
 - Hide actions unavailable to the current role; the API remains the authorization boundary.
@@ -48,6 +50,7 @@ Keep this file short. Read the phase specs + code for detail.
 
 - Complete Phase 01 and Phase 02 manual acceptance checks.
 - Add test tooling and the Phase 06 unit/Playwright coverage; `package.json` currently has no test script or test dependencies, and installing packages requires approval.
+- Complete Phase 08 live acceptance using organiser-provided admin credentials and the issued team email domain.
 
 ## Context files (read order for new work)
 

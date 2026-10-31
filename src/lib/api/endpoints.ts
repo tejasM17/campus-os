@@ -1,5 +1,5 @@
 import { apiCall } from "./client";
-import type { Claim, Paged, Profile, FoundPost, LostRequest } from "./types";
+import type { AdminProfile, AdminUser, Claim, ManagedRole, Paged, Profile, FoundPost, LostRequest } from "./types";
 
 export type FoundPostStatus = "active" | "archived";
 
@@ -163,6 +163,12 @@ export interface LoginResponse {
   profile: Profile;
 }
 
+export interface AdminLoginResponse {
+  access_token: string;
+  expires_in: number;
+  profile: AdminProfile;
+}
+
 export function loginRequest(email_id: string, otp: string) {
   return apiCall<LoginResponse>("POST", "/api/v1/auth/login", {
     body: { email_id, otp },
@@ -170,7 +176,81 @@ export function loginRequest(email_id: string, otp: string) {
 }
 
 export function adminLoginRequest(email_id: string, otp: string) {
-  return apiCall<LoginResponse>("POST", "/api/v1/auth/admin/login", {
+  return apiCall<AdminLoginResponse>("POST", "/api/v1/auth/admin/login", {
     body: { email_id, otp },
+    authScope: "admin",
   });
+}
+
+export const ADMIN_TEAM_EMAIL_DOMAIN =
+  process.env.NEXT_PUBLIC_ADMIN_TEAM_EMAIL_DOMAIN?.trim().toLowerCase() ?? "";
+
+export function adminMeRequest() {
+  return apiCall<AdminProfile>("GET", "/api/v1/admin/me", { authScope: "admin" });
+}
+
+export function listAdminUsersRequest(options: {
+  role?: ManagedRole;
+  cursor?: string;
+  limit?: number;
+} = {}) {
+  const params = new URLSearchParams();
+  if (options.role) params.set("role", options.role);
+  if (options.cursor) params.set("cursor", options.cursor);
+  if (options.limit) params.set("limit", String(options.limit));
+  const query = params.toString();
+  return apiCall<Paged<AdminUser>>(
+    "GET",
+    `/api/v1/admin/users${query ? `?${query}` : ""}`,
+    { authScope: "admin" },
+  );
+}
+
+export type CreateAdminUserInput =
+  | { role: "student"; name: string; usn: string; dept: string; email_id: string; phone_number: string }
+  | { role: "faculty"; name: string; designation: string; email_id: string; phone_number: string }
+  | { role: "office_staff"; name: string; dept: string; designation: string; email_id: string; phone_number: string };
+
+export interface AdminUserUpdate {
+  name?: string;
+  phone_number?: string;
+  usn?: string | null;
+  dept?: string | null;
+  designation?: string | null;
+}
+
+export function createAdminUserRequest(input: CreateAdminUserInput) {
+  return apiCall<AdminUser>("POST", "/api/v1/admin/users", {
+    body: input,
+    authScope: "admin",
+  });
+}
+
+function adminUserPath(emailId: string) {
+  return `/api/v1/admin/users/${encodeURIComponent(emailId)}`;
+}
+
+export function getAdminUserRequest(emailId: string) {
+  return apiCall<AdminUser>("GET", adminUserPath(emailId), { authScope: "admin" });
+}
+
+export function updateAdminUserRequest(emailId: string, input: AdminUserUpdate) {
+  return apiCall<AdminUser>("PATCH", adminUserPath(emailId), {
+    body: input,
+    authScope: "admin",
+  });
+}
+
+export function deleteAdminUserRequest(emailId: string) {
+  return apiCall<{ message: string }>("DELETE", adminUserPath(emailId), {
+    authScope: "admin",
+  });
+}
+
+export function regenerateAdminUserOtpRequest(emailId: string) {
+  return apiCall<{ otp: string }>(
+    "POST",
+    `${adminUserPath(emailId)}/regenerate-otp`,
+    { authScope: "admin" },
+  );
 }
