@@ -36,7 +36,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
   const profile = useSessionStore((state) => state.profile);
   const logout = useSessionStore((state) => state.logout);
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen w-full min-w-0 flex-1 bg-background">
       <Sidebar side="left" collapsible="offcanvas" className="md:hidden">
         <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
           <Link href="/findit" onClick={() => setOpenMobile(false)} className="flex min-h-11 items-center gap-2.5 rounded-md font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
@@ -67,7 +67,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
         </SidebarFooter>}
       </Sidebar>
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-[120rem] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10 2xl:px-16">
+        <div className="mx-auto flex h-16 w-full max-w-none items-center justify-between gap-4 px-4 sm:px-6 lg:px-10 2xl:px-16">
           <Link href="/findit" className="flex min-h-11 items-center gap-2.5 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
             <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground"><Search aria-hidden="true" className="size-4" /></span>
             <span className="font-semibold tracking-tight">CampusOS <span className="text-muted-foreground">/ FindIt</span></span>
