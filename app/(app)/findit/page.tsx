@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Plus, Search } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { hasValidSession, useSessionStore } from "@/src/store/session";
@@ -47,7 +48,7 @@ export default function FindItFeedPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="mx-auto max-w-7xl px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12">
+      <section className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12 2xl:px-16">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
@@ -89,8 +90,8 @@ export default function FindItFeedPage() {
         </div>
 
         {postsQuery.isPending ? (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" aria-label="Loading found items">
-            {Array.from({ length: 8 }, (_, index) => <PostCardSkeleton key={index} />)}
+          <div className="mt-6 grid grid-cols-12 gap-4" aria-label="Loading found items">
+            {Array.from({ length: 8 }, (_, index) => <div key={index} className="col-span-12 sm:col-span-6 lg:col-span-4 2xl:col-span-3"><PostCardSkeleton /></div>)}
           </div>
         ) : postsQuery.isError ? (
           <div className="mt-8 rounded-xl border border-destructive/30 bg-destructive/5 p-6" role="alert">
@@ -101,11 +102,16 @@ export default function FindItFeedPage() {
             </Button>
           </div>
         ) : posts.length === 0 ? (
-          <div className="mt-8"><EmptyState archived={status === "archived"} /></div>
+          <div className="mt-8">
+            <EmptyState archived={status === "archived"} />
+            {status === "active" && <Button nativeButton={false} render={<Link href="/findit/lost-requests" />} variant="outline" className="mt-4 min-h-12 w-full">
+              Report a lost item
+            </Button>}
+          </div>
         ) : (
           <>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {posts.map((post) => <PostCard key={post.post_id} post={post} />)}
+            <div className="mt-6 grid grid-cols-12 gap-4">
+              {posts.map((post) => <div key={post.post_id} className="col-span-12 min-w-0 sm:col-span-6 lg:col-span-4 2xl:col-span-3"><PostCard post={post} /></div>)}
             </div>
             {postsQuery.hasNextPage && (
               <div className="mt-10 flex justify-center">

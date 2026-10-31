@@ -66,6 +66,7 @@ function FieldInput({
   onChange,
   type = "text",
   required = false,
+  placeholder,
   maxLength,
   minLength,
   pattern,
@@ -80,6 +81,7 @@ function FieldInput({
   onChange?: (value: string) => void;
   type?: string;
   required?: boolean;
+  placeholder?: string;
   maxLength?: number;
   minLength?: number;
   pattern?: string;
@@ -91,7 +93,7 @@ function FieldInput({
   return (
     <Field data-invalid={Boolean(error)}>
       <FieldLabel htmlFor={id}>{label}{required ? " *" : ""}</FieldLabel>
-      <Input id={id} name={id} type={type} required={required} maxLength={maxLength} minLength={minLength} pattern={pattern} list={list} value={value} readOnly={readOnly} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined} onChange={onChange ? (event) => onChange(event.target.value) : undefined} />
+      <Input id={id} name={id} type={type} required={required} maxLength={maxLength} minLength={minLength} pattern={pattern} list={list} placeholder={placeholder} value={value} readOnly={readOnly} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined} onChange={onChange ? (event) => onChange(event.target.value) : undefined} />
       {hint && <FieldDescription id={`${id}-hint`}>{hint}</FieldDescription>}
       {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
     </Field>
@@ -201,7 +203,7 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
             <FieldInput id="email_id" label="Campus email" type="email" required value={values.email_id ?? ""} onChange={(value) => set("email_id", value)} hint={adminDomain ? `Must end with @${adminDomain}` : "Team domain is read from the administrator profile."} error={errors.email_id} />
             <FieldInput id="phone_number" label="Phone number" type="tel" required pattern="[0-9]{10}" maxLength={10} value={values.phone_number ?? ""} onChange={(value) => { set("phone_number", value.replace(/\D/g, "").slice(0, 10)); setErrors((current) => ({ ...current, phone_number: "" })); }} hint="Enter exactly 10 digits." error={errors.phone_number} />
             {role === "student" && <>
-              <FieldInput id="usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" value={values.usn ?? ""} onChange={(value) => set("usn", value)} error={errors.usn} />
+              <FieldInput id="usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" placeholder="1CF24CS001" value={values.usn ?? ""} onChange={(value) => set("usn", value)} hint="5–20 letters or numbers, e.g. 1CF24CS001." error={errors.usn} />
               <FieldInput id="dept" label="Department" required minLength={2} maxLength={60} list="student-departments" value={values.dept ?? ""} onChange={(value) => set("dept", value)} error={errors.dept} />
               <datalist id="student-departments"><option value="CSE"/><option value="ISE"/><option value="ECE"/><option value="MBA"/></datalist>
             </>}
@@ -214,7 +216,7 @@ function CreateUserDialog({ open, onOpenChange, onCreated }: { open: boolean; on
           </FieldGroup>
           {requestError && <Alert variant="destructive" role="alert"><AlertTitle>User could not be created</AlertTitle><AlertDescription>{requestError}</AlertDescription></Alert>}
         </form>
-        <DialogFooter>
+        <DialogFooter className="flex-row justify-end">
           <Button type="button" variant="outline" className="min-h-11" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="submit" form="create-user-form" disabled={create.isPending} className="min-h-11">{create.isPending ? "Creating…" : "Create user"}</Button>
         </DialogFooter>
@@ -275,7 +277,7 @@ function EditUserDialog({ emailId, open, onOpenChange, onSaved }: { emailId: str
                 <FieldInput id="edit-name" label="Full name" required minLength={2} maxLength={100} value={values.name ?? user.name} onChange={(value) => set("name", value)} error={errors.name} />
                 <FieldInput id="edit-phone_number" label="Phone number" type="tel" required pattern="\+?[0-9]{10,15}" value={values.phone_number ?? user.phone_number ?? ""} onChange={(value) => set("phone_number", value)} error={errors.phone_number} />
                 {user.role === "student" && <>
-                  <FieldInput id="edit-usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" value={values.usn ?? user.usn ?? ""} onChange={(value) => set("usn", value)} error={errors.usn} />
+                  <FieldInput id="edit-usn" label="USN" required minLength={5} maxLength={20} pattern="[A-Za-z0-9]{5,20}" placeholder="1CF24CS001" value={values.usn ?? user.usn ?? ""} onChange={(value) => set("usn", value)} hint="5–20 letters or numbers, e.g. 1CF24CS001." error={errors.usn} />
                   <FieldInput id="edit-dept" label="Department" required minLength={2} maxLength={60} value={values.dept ?? user.dept ?? ""} onChange={(value) => set("dept", value)} error={errors.dept} />
                 </>}
                 {user.role === "faculty" && <FieldInput id="edit-designation" label="Designation" required minLength={2} maxLength={60} value={values.designation ?? user.designation ?? ""} onChange={(value) => set("designation", value)} error={errors.designation} />}
@@ -287,7 +289,7 @@ function EditUserDialog({ emailId, open, onOpenChange, onSaved }: { emailId: str
               {requestError && <Alert variant="destructive" role="alert"><AlertTitle>Changes could not be saved</AlertTitle><AlertDescription>{requestError}</AlertDescription></Alert>}
             </form>
           </>}
-        <DialogFooter>
+        <DialogFooter className="flex-row justify-end">
           <Button type="button" variant="outline" className="min-h-11" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="submit" form="edit-user-form" disabled={!user || query.isPending || query.isError || update.isPending} className="min-h-11">{update.isPending ? "Saving…" : "Save changes"}</Button>
         </DialogFooter>

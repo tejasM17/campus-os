@@ -23,7 +23,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-8 lg:px-12">
+        <div className="mx-auto flex min-h-16 w-full max-w-[120rem] items-center justify-between gap-4 px-4 sm:px-8 lg:px-12 2xl:px-16">
           <Link href="/admin" className="font-semibold tracking-tight">CampusOS <span className="text-primary">/ Admin</span></Link>
           <nav aria-label="Administration" className="flex items-center gap-2 sm:gap-4">
             <Link href="/admin/users" aria-current={pathname.startsWith("/admin/users") ? "page" : undefined} className={`rounded-md px-3 py-2 text-sm font-medium ${pathname.startsWith("/admin/users") ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}>Users</Link>
@@ -44,7 +44,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pt-10 lg:px-12">
+      <main className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-8 sm:px-8 sm:pt-10 lg:px-12 2xl:px-16">
         {me.isError && <Alert variant="destructive" className="mb-6" role="alert"><AlertTitle>Admin profile could not be refreshed</AlertTitle><AlertDescription>{me.error instanceof Error ? me.error.message : "The request could not be completed."}</AlertDescription></Alert>}
         {children}
       </main>

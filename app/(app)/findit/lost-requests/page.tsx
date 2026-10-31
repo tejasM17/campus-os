@@ -39,7 +39,7 @@ export default function LostRequestsPage() {
   }, [query.error]);
 
   return <main className="min-h-screen bg-background">
-    <section className="mx-auto max-w-7xl px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12">
+    <section className="mx-auto w-full max-w-[120rem] px-5 pb-16 pt-9 sm:px-8 sm:pt-12 lg:px-12 2xl:px-16">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-2xl">
           <Link href="/findit" className="inline-flex items-center gap-2 text-sm font-semibold text-primary"><Search aria-hidden="true" className="size-4" /> FindIt · Lost &amp; Found</Link>
@@ -67,8 +67,8 @@ export default function LostRequestsPage() {
           </div>
         </div>
 
-        {query.isPending ? <div className="mt-6 grid gap-4 md:grid-cols-2" aria-label="Loading lost reports">
-          {Array.from({ length: 4 }, (_, index) => <div key={index} className="h-52 animate-pulse rounded-xl border border-border bg-muted/60" />)}
+        {query.isPending ? <div className="mt-6 grid grid-cols-12 gap-4" aria-label="Loading lost reports">
+          {Array.from({ length: 4 }, (_, index) => <div key={index} className="col-span-12 h-52 animate-pulse rounded-xl border border-border bg-muted/60 md:col-span-6 2xl:col-span-4" />)}
         </div> : query.isError ? <div className="mt-8 rounded-xl border border-destructive/30 bg-destructive/5 p-6" role="alert">
           <h2 className="font-semibold">Lost reports couldn’t be loaded</h2><p className="mt-1 text-sm text-muted-foreground">{query.error.message}</p>
           <Button type="button" variant="outline" className="mt-4 min-h-11" onClick={() => void query.refetch()}>Try again <ArrowRight aria-hidden="true" className="size-4" /></Button>
@@ -77,8 +77,8 @@ export default function LostRequestsPage() {
           <h2 className="mt-4 text-lg font-semibold">No {status} reports</h2>
           <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">{status === "active" ? "Reports for lost items will appear here." : "Reports marked as found will appear here."}</p>
         </div> : <>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {requests.map((request) => <LostRequestEntry key={request.request_id} request={request} profile={profile!} isStaff={isStaff} />)}
+          <div className="mt-6 grid grid-cols-12 gap-4">
+            {requests.map((request) => <div key={request.request_id} className={`col-span-12 min-w-0 ${requests.length === 1 ? "" : "md:col-span-6 2xl:col-span-4"}`}><LostRequestEntry request={request} profile={profile!} isStaff={isStaff} wide={requests.length === 1} /></div>)}
           </div>
           {query.hasNextPage && <div className="mt-10 flex justify-center"><Button type="button" variant="outline" className="min-h-11 min-w-40 gap-2" disabled={query.isFetchingNextPage} onClick={() => void query.fetchNextPage()}>{query.isFetchingNextPage ? "Loading more…" : "Load more"}{!query.isFetchingNextPage && <ArrowRight aria-hidden="true" className="size-4" />}</Button></div>}
         </>}

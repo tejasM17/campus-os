@@ -67,7 +67,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
         </SidebarFooter>}
       </Sidebar>
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
+        <div className="mx-auto flex h-16 w-full max-w-[120rem] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10 2xl:px-16">
           <Link href="/findit" className="flex min-h-11 items-center gap-2.5 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
             <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground"><Search aria-hidden="true" className="size-4" /></span>
             <span className="font-semibold tracking-tight">CampusOS <span className="text-muted-foreground">/ FindIt</span></span>
@@ -102,7 +102,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <div>{children}</div>
+      <div className="w-full min-w-0">{children}</div>
     </div>
   );
 }

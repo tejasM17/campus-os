@@ -31,6 +31,11 @@ Keep this file short. Read the phase specs + code for detail.
 - Endpoint audit: added the missing FindIt `GET /api/v1/users/me` profile refresh in the app shell and enabled resolution detail reads for approved claimants as well as staff.
 - Mobile FindIt navigation now opens in the shadcn sidebar from the top bar; the fixed bottom navigation is removed.
 - Admin account creation now accepts only exactly 10 numeric digits for phone numbers.
+- Student USN fields show the accepted 5–20 alphanumeric format with an example.
+- The active found-items empty state links directly to the lost-report screen.
+- Staff photo uploads now show removable image previews before submission.
+- Desktop app screens now share a full-width canvas up to 120rem, with wider-screen grids and single-report cards spanning the available row.
+- Found items, claims, and lost-report collections now use 12-column responsive grids with matching loading layouts, so cards span the content area evenly from mobile through wide screens.
 
 | Phase | Feature | Status / key locations |
 | --- | --- | --- |

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +15,28 @@ const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 function localDate() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function SelectedPhoto({ file, onRemove }: { file: File; onRemove: () => void }) {
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(file);
+    if (imageRef.current) imageRef.current.src = objectUrl;
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
+
+  return (
+    <li className="flex min-w-0 items-center gap-3 rounded-lg border border-border p-2">
+      {/* Object URLs are local previews, so use a native image and release each URL on cleanup. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={imageRef} alt={`Preview of ${file.name}`} width={56} height={56} className="size-14 shrink-0 rounded-md object-cover" />
+      <span className="min-w-0 flex-1 truncate text-sm">{file.name} ({(file.size / 1024 / 1024).toFixed(1)} MB)</span>
+      <Button type="button" variant="ghost" className="min-h-11 min-w-11 shrink-0 px-2" aria-label={`Remove ${file.name}`} onClick={onRemove}>
+        <X aria-hidden="true" className="size-4" />
+      </Button>
+    </li>
+  );
 }
 
 export function PostFormDialog({ open, onOpenChange, post, submitting, onSubmit }: {
@@ -81,7 +104,7 @@ export function PostFormDialog({ open, onOpenChange, post, submitting, onSubmit 
           setRemoveImages(removing);
           setError(null);
         }} /> Remove current photos</label></fieldset> : null}
-        <div><label htmlFor="post-images" className="mb-1.5 block font-medium">Photos (up to 5 total, 5 MB each){post?.images.length ? ` · ${removeImages ? 0 : post.images.length} current + ${images.length} new` : ""}</label><Input id="post-images" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} /><ul className="mt-2 space-y-1">{images.map((image, index) => <li key={`${image.name}-${index}`} className="flex items-center justify-between gap-2 text-sm"><span className="truncate">{image.name} ({(image.size / 1024 / 1024).toFixed(1)} MB)</span><Button type="button" variant="ghost" className="min-h-11" onClick={() => setImages((current) => current.filter((_, itemIndex) => itemIndex !== index))}>Remove</Button></li>)}</ul></div>
+        <div><label htmlFor="post-images" className="mb-1.5 block font-medium">Photos (up to 5 total, 5 MB each){post?.images.length ? ` · ${removeImages ? 0 : post.images.length} current + ${images.length} new` : ""}</label><Input id="post-images" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} /><ul className="mt-2 grid gap-2 sm:grid-cols-2">{images.map((image, index) => <SelectedPhoto key={`${image.name}-${index}`} file={image} onRemove={() => setImages((current) => current.filter((_, itemIndex) => itemIndex !== index))} />)}</ul></div>
         {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
         <DialogFooter><Button type="button" variant="outline" className="min-h-11" onClick={() => onOpenChange(false)}>Cancel</Button><Button type="submit" className="min-h-11" disabled={submitting}>{submitting ? "Saving…" : post ? "Save changes" : "Post item"}</Button></DialogFooter>
       </form>
